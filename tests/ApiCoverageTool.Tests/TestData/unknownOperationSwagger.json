@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "/api/operation/all": {
+      "unknown": {},
+      "post": {}
+    },
+    "/": {
+      "get": {}
+    }
+  }
+}

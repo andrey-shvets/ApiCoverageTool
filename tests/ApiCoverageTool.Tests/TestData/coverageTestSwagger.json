@@ -1,0 +1,22 @@
+{
+  "paths": {
+    "/api/operation": {
+      "get": {}
+    },
+    "/api/operation/all": {
+      "post": {},
+      "get": {},
+      "delete": {}
+    },
+    "/api/operation/all/duplicate": {
+      "post": {},
+      "get": {}
+    },
+    "api/operation/get": {
+      "get": {}
+    },
+    "/": {
+      "get": {}
+    }
+  }
+}

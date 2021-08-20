@@ -1,0 +1,16 @@
+{
+  "paths": {
+    "/api/operation/none": {
+    },
+    "/api/operation/all": {
+      "post": {},
+      "get": {},
+      "put": {},
+      "patch": {},
+      "delete": {}
+    },
+    "/": {
+      "get": {}
+    }
+  }
+}
