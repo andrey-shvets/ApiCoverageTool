@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
 using RestEase;
 

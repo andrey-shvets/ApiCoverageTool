@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Tests.ObjectsUnderTests;
 using FluentAssertions;
 using Mono.Cecil;

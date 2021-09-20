@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ApiCoverageTool.Exceptions;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using FluentAssertions;
 using Xunit;
 

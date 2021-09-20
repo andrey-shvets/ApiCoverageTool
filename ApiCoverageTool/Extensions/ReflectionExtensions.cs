@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 
-namespace ApiCoverageTool.Extentions
+namespace ApiCoverageTool.Extensions
 {
     public static class ReflectionExtensions
     {
@@ -58,7 +58,7 @@ namespace ApiCoverageTool.Extentions
             if (obj is null)
                 throw new ArgumentNullException(paramName, $"{paramName} can not be null.");
         }
-        
+
         public static MethodInfo ToMethodInfo(this MethodDefinition methodDefinition)
         {
             methodDefinition.IsNotNullValidation(nameof(methodDefinition));
@@ -91,7 +91,7 @@ namespace ApiCoverageTool.Extentions
             method.IsNotNullValidation(nameof(method));
 
             if (MethodInfosMap.ContainsKey(method))
-                return MethodInfosMap[method];            
+                return MethodInfosMap[method];
 
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(method.DeclaringType.Assembly.Location);
             var typeDefinition = assemblyDefinition.MainModule.GetType(method.DeclaringType.FullName.Replace("+", "/"));
@@ -122,7 +122,7 @@ namespace ApiCoverageTool.Extentions
             if (typeDefinition.IsNested)
             {
                 var declaringType = typeDefinition.DeclaringType.ToType();
-                
+
                 if (TypeDefinitionsMap.ContainsKey(typeDefinition.FullName))
                     return TypeDefinitionsMap[typeDefinition.FullName];
 

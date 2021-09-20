@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
 using FluentAssertions;
 using Xunit;

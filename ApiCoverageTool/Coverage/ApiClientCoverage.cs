@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
 using ApiCoverageTool.RestClient;
 

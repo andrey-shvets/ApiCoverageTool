@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ApiCoverageTool.AssemblyUnderTests.Controllers;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using ApiCoverageTool.RestClient;
 using FluentAssertions;
 using Xunit;

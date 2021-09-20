@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using ApiCoverageTool.Extentions;
+using ApiCoverageTool.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
