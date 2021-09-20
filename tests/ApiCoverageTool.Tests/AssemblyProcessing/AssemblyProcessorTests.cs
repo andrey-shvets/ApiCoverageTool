@@ -4,15 +4,16 @@ using System.Reflection;
 using ApiCoverageTool.AssemblyProcessing;
 using ApiCoverageTool.Tests.ObjectsUnderTests;
 using Xunit;
-using static ApiCoverageTool.Tests.AssemblyProcessing.AssemblyPocessorTestsHelper;
+using static ApiCoverageTool.Tests.AssemblyProcessing.AssemblyProcessorTestsHelper;
 
 namespace ApiCoverageTool.Tests
 {
-    public class AssemblyPocessorTests
+    public class AssemblyProcessorTests
     {
         private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
 
         #region GetAllTests
+
         [Fact]
         public void GetAllTests_WithNull_ThrowsArgumentNullException()
         {
@@ -41,9 +42,11 @@ namespace ApiCoverageTool.Tests
 
             VerifyMethodsNames(tests, expected);
         }
+
         #endregion GetAllTests
 
         #region GetMethodCallsFromMethodBody
+
         [Fact]
         public void GetMethodCallsFromMethodBody_WithNull_ThrowsArgumentNullException()
         {
@@ -85,9 +88,11 @@ namespace ApiCoverageTool.Tests
 
             VerifyMethodsNames(methodsCalls, expected);
         }
-        #endregion GetMethodCallsFromMethodBody    
+
+        #endregion GetMethodCallsFromMethodBody
 
         #region GetAllMethodCalls
+
         [Fact]
         public void GetAllMethodCalls_WithNull_ThrowsArgumentNullException()
         {
@@ -169,6 +174,7 @@ namespace ApiCoverageTool.Tests
 
             VerifyMethodsNames(methodsCalls, expected);
         }
-        #endregion GetAllMethodCalls      
+
+        #endregion GetAllMethodCalls
     }
 }

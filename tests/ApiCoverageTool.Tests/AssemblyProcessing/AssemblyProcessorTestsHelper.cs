@@ -6,7 +6,7 @@ using FluentAssertions;
 
 namespace ApiCoverageTool.Tests.AssemblyProcessing
 {
-    public static class AssemblyPocessorTestsHelper
+    public static class AssemblyProcessorTestsHelper
     {
         public static Assembly GetAssemblyByName(string name)
         {
@@ -14,7 +14,7 @@ namespace ApiCoverageTool.Tests.AssemblyProcessing
             return AppDomain.CurrentDomain.GetAssemblies().
                    SingleOrDefault(assembly => assembly.GetName().Name == name);
         }
-        
+
         public static void VerifyMethodsNames(IEnumerable<MethodInfo> methods, IList<string> expected)
         {
             var names = methods.Select(m => m.Name).ToList();

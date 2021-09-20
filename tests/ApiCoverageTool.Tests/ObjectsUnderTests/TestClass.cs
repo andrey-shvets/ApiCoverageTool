@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeMadeStatic.Local
+using System.Threading.Tasks;
 using RestEase;
 
 namespace ApiCoverageTool.Tests.ObjectsUnderTests
@@ -34,7 +36,7 @@ namespace ApiCoverageTool.Tests.ObjectsUnderTests
             InternalMethod();
             return null;
         }
-        
+
         private void PrivateMethod()
         { }
 

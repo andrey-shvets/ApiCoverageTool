@@ -5,6 +5,7 @@ using Xunit;
 
 namespace ApiCoverageTool.AssemblyUnderTests
 {
+    [Trait("Category", "Mock tests")]
     public class MoreMockTests
     {
         private readonly ITestController _client = RestClient.For<ITestController>();
@@ -27,9 +28,9 @@ namespace ApiCoverageTool.AssemblyUnderTests
             new MockTests().NotTestMethodNoClientCall();
             var someInt = 42;
             var str = someInt.ToString(nameof(someInt));
-            str.ToLower();
+            _ = str.ToLower();
             var newClient = RestClient.For<ITestController>();
-            var _ = newClient.PatchAllMethod().Result;
+            _ = newClient.PatchAllMethod().Result;
         }
 
         [Fact]

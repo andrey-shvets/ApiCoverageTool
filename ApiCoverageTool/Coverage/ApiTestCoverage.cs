@@ -20,7 +20,7 @@ namespace ApiCoverageTool.Coverage
 
             return GetTestCoverage(allTests, clientTypes);
         }
-        
+
         private static Dictionary<EndpointInfo, List<MethodInfo>> GetTestCoverage(IEnumerable<MethodInfo> allTests, Type[] clientTypes)
         {
             var result = new Dictionary<EndpointInfo, List<MethodInfo>>();

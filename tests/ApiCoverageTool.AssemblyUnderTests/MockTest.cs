@@ -6,6 +6,7 @@ using Xunit;
 
 namespace ApiCoverageTool.AssemblyUnderTests
 {
+    [Trait("Category", "Mock tests")]
     public class MockTests
     {
         private readonly ITestController _client = RestClient.For<ITestController>();
@@ -20,19 +21,25 @@ namespace ApiCoverageTool.AssemblyUnderTests
 
         [Theory]
         [InlineData(null)]
-        public void MockTheory(string _)
+        public void MockTheory(string str)
         {
+            if (string.IsNullOrEmpty(str))
+                throw new ArgumentException($"'{nameof(str)}' cannot be null or empty.", nameof(str));
+
             var someInt = 42;
             var newClient = RestClient.For<ITestController>();
-            var someString = someInt.ToString() + NotTestMethodNoClientCall();
-            var result = newClient.GetMethod().Result;
+            _ = someInt.ToString() + NotTestMethodNoClientCall();
+            _ = newClient.GetMethod().Result;
             NotTestMethodNoClientCall();
         }
 
         [Theory]
         [InlineData(null)]
-        public async Task NoClientCallTheoryAsync(string _)
+        public async Task NoClientCallTheoryAsync(string str)
         {
+            if (string.IsNullOrEmpty(str))
+                throw new ArgumentException($"'{nameof(str)}' cannot be null or empty.", nameof(str));
+
             await NotTestMethodAsync();
         }
 
@@ -61,7 +68,9 @@ namespace ApiCoverageTool.AssemblyUnderTests
         }
 
         public async Task NotTestMethodAsync()
-        { }
+        {
+            await Task.Delay(10);
+        }
 
         private void NotTestMethodExecutesLambdaExpression(Func<Task<object>> lambda)
         {
