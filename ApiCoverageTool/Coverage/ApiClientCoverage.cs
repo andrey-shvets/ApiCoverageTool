@@ -10,7 +10,7 @@ namespace ApiCoverageTool.Coverage
 {
     public static class ApiClientCoverage<T> where T : IRestClientMethodsProcessor, new()
     {
-        public async static Task<ApiCoverageByClientResult> GetCoverageByClientFromUri(Uri swaggerJsonUri, params Type[] clientTypes)
+        public static async Task<ApiCoverageByClientResult> GetCoverageByClientFromUri(Uri swaggerJsonUri, params Type[] clientTypes)
         {
             var serviceEndpoints = await SwaggerParser.ParseSwaggerApiFromUri(swaggerJsonUri);
             var mappedEndpoints = RestClientAnalyzer<T>.GetRestMethodsFromClients(clientTypes);
@@ -18,7 +18,7 @@ namespace ApiCoverageTool.Coverage
             return GetCoverageByClient(serviceEndpoints, mappedEndpoints);
         }
 
-        public async static Task<ApiCoverageByClientResult> GetCoverageByClientFromUri(string swaggerJsonUriString, params Type[] clientTypes)
+        public static async Task<ApiCoverageByClientResult> GetCoverageByClientFromUri(string swaggerJsonUriString, params Type[] clientTypes)
         {
             var swaggerJsonUri = new Uri(swaggerJsonUriString);
             return await GetCoverageByClientFromUri(swaggerJsonUri, clientTypes);
@@ -40,7 +40,7 @@ namespace ApiCoverageTool.Coverage
             return GetCoverageByClient(serviceEndpoints, mappedEndpoints);
         }
 
-        public static ApiCoverageByClientResult GetCoverageByClient(IList<EndpointInfo> serviceEndpoints, 
+        public static ApiCoverageByClientResult GetCoverageByClient(IList<EndpointInfo> serviceEndpoints,
             IList<MappedEndpointInfo> mappedEndpoints)
         {
             serviceEndpoints.IsNotNullValidation(nameof(serviceEndpoints));

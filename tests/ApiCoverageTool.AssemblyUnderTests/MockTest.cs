@@ -8,13 +8,13 @@ namespace ApiCoverageTool.AssemblyUnderTests
 {
     public class MockTests
     {
-        private readonly ITestController client = RestClient.For<ITestController>();
+        private readonly ITestController _client = RestClient.For<ITestController>();
 
         [Fact]
         public async Task MockFactAsync()
         {
             await NotTestMethodAsync();
-            var _ = await client.GetMethod();
+            _ = await _client.GetMethod();
             NotTestMethodNoClientCall();
         }
 
@@ -45,13 +45,13 @@ namespace ApiCoverageTool.AssemblyUnderTests
         [Fact]
         public void MockLambdaExpression()
         {
-            NotTestMethodExecutesLambdaExpression(() => client.PatchAllMethod());
+            NotTestMethodExecutesLambdaExpression(() => _client.PatchAllMethod());
         }
 
         [Fact]
         public async Task MockLambdaExpressionAsync()
         {
-            Func<Task> lambda = async () => await client.PatchAllMethod();
+            Func<Task> lambda = async () => await _client.PatchAllMethod();
             await lambda();
         }
 
@@ -62,7 +62,7 @@ namespace ApiCoverageTool.AssemblyUnderTests
 
         public async Task NotTestMethodAsync()
         { }
-        
+
         private void NotTestMethodExecutesLambdaExpression(Func<Task<object>> lambda)
         {
             var _ = lambda().Result;

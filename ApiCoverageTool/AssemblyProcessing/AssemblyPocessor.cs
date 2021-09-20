@@ -19,7 +19,7 @@ namespace ApiCoverageTool.AssemblyProcessing
         {
             assembly.IsNotNullValidation(nameof(assembly));
 
-            //TODO: Move this to a factory
+            // TODO: Move this to a factory
             var testFinder = new TestFinder();
             testFinder.TestProcessors.Add(new XUnitTestsProcessor());
             testFinder.TestProcessors.Add(new MSTestTestsProcessor());
@@ -97,11 +97,12 @@ namespace ApiCoverageTool.AssemblyProcessing
 
             var asyncMethodStateMachine = asyncMethodStateMachineInstanceCreation.Resolve().DeclaringType;
             var asyncMethodImplementation = asyncMethodStateMachine.Methods.First(m => m.Name == "MoveNext");
-            
+
             return GetMethodCallsFromNonAsyncMethodBody(asyncMethodImplementation, assembliesToCheck);
         }
 
-        private static IList<string> GetAvailaibleAssemblies(AssemblyDefinition assembly,
+        private static IList<string> GetAvailaibleAssemblies(
+            AssemblyDefinition assembly,
             string includeAssemblyRegex = DefaultIncludeAssemblyMask,
             string excludeAssemblyRegex = DefaultExcludeAssemblyMask)
         {
@@ -119,11 +120,12 @@ namespace ApiCoverageTool.AssemblyProcessing
         }
 
         #region Extensions
+
         private static bool IsAsync(this MethodInfo method)
         {
             return method.GetCustomAttribute<AsyncStateMachineAttribute>() is not null;
         }
-        
+
         private static bool IsFromAssemblies(this MethodDefinition method, IEnumerable<string> assemblies)
         {
             return assemblies.Contains(method.Module.Assembly.Name.Name);
@@ -131,8 +133,8 @@ namespace ApiCoverageTool.AssemblyProcessing
 
         private static bool IsMethodCall(this Instruction instruction)
         {
-            return instruction.OpCode == OpCodes.Call 
-                || instruction.OpCode == OpCodes.Calli 
+            return instruction.OpCode == OpCodes.Call
+                || instruction.OpCode == OpCodes.Calli
                 || instruction.OpCode == OpCodes.Callvirt;
         }
 
@@ -140,6 +142,7 @@ namespace ApiCoverageTool.AssemblyProcessing
         {
             return instruction.OpCode == OpCodes.Ldftn;
         }
+
         #endregion Extensions
     }
 }

@@ -13,10 +13,10 @@ namespace ApiCoverageTool
 {
     public static class SwaggerParser
     {
-        public async static Task<IList<EndpointInfo>> ParseSwaggerApiFromUri(Uri swaggerJsonUri)
+        public static async Task<IList<EndpointInfo>> ParseSwaggerApiFromUri(Uri swaggerJsonUri)
         {
             var client = new HttpClient();
-            string json = await client.GetStringAsync(swaggerJsonUri);
+            var json = await client.GetStringAsync(swaggerJsonUri);
 
             return ParseSwaggerApi(json);
         }
@@ -30,8 +30,7 @@ namespace ApiCoverageTool
 
         public static IList<EndpointInfo> ParseSwaggerApi(string swaggerJson)
         {
-            if (swaggerJson is null)
-                throw new ArgumentNullException($"{nameof(swaggerJson)} parameter cannot be null.");
+            swaggerJson.IsNotNullValidation(nameof(swaggerJson));
 
             try
             {

@@ -7,7 +7,7 @@ namespace ApiCoverageTool.AssemblyUnderTests
 {
     public class MoreMockTests
     {
-        readonly ITestController client = RestClient.For<ITestController>();
+        private readonly ITestController _client = RestClient.For<ITestController>();
 
         [Fact]
         public async Task MockTestNestedCallAsync()
@@ -74,9 +74,9 @@ namespace ApiCoverageTool.AssemblyUnderTests
             MethodWithTheCycle();
         }
 
-        private  object NotTestMethod()
+        private object NotTestMethod()
         {
-            return client.GetMethod().Result;
+            return _client.GetMethod().Result;
         }
 
         private static async Task<object> NotTestMethodAsync(ITestController newClient)

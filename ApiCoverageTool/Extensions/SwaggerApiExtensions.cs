@@ -20,7 +20,7 @@ namespace ApiCoverageTool.Extensions
             "put" => HttpMethod.Put,
             "patch" => HttpMethod.Patch,
             "delete" => HttpMethod.Delete,
-            _ => throw new ArgumentException(nameof(httpMethodName), $"{httpMethodName} is invalid HttpMethod"),
+            _ => throw new ArgumentException($"{httpMethodName} is invalid HttpMethod", nameof(httpMethodName)),
         };
     }
 }
