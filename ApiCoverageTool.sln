@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCoverageTool", "ApiCover
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9D1A1E1-F0EE-4FC5-B1F0-1A5DD3C7FFBF}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -14,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D8257A71
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCoverageTool.Tests", "tests\ApiCoverageTool.Tests\ApiCoverageTool.Tests.csproj", "{70DE16DE-CB20-42B0-B663-280AB3E9F1A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCoverageTool.AssemblyUnderTests", "tests\ApiCoverageTool.AssemblyUnderTests\ApiCoverageTool.AssemblyUnderTests.csproj", "{3F80676D-D787-4069-9678-0A643D8B718F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCoverageTool.AssemblyUnderTests", "tests\ApiCoverageTool.AssemblyUnderTests\ApiCoverageTool.AssemblyUnderTests.csproj", "{3F80676D-D787-4069-9678-0A643D8B718F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
