@@ -9,7 +9,7 @@ using Mono.Cecil.Cil;
 
 namespace ApiCoverageTool.AssemblyProcessing
 {
-    public static class AssemblyPocessor
+    public static class AssemblyProcessor
     {
         private const string DefaultIncludeAssemblyMask = ".+";
         private const string DefaultExcludeAssemblyMask =
@@ -45,8 +45,8 @@ namespace ApiCoverageTool.AssemblyProcessing
             {
                 var methodToCheck = methodsToCheck.Dequeue();
 
-                var methodstoProcess = GetMethodCallsFromMethodBody(methodToCheck, assembliesToCheck);
-                var newMethods = methodstoProcess.Where(m => !methodsCalled.Contains(m));
+                var methodsToProcess = GetMethodCallsFromMethodBody(methodToCheck, assembliesToCheck);
+                var newMethods = methodsToProcess.Where(m => !methodsCalled.Contains(m));
 
                 foreach (var calledMethod in newMethods)
                 {
@@ -67,7 +67,7 @@ namespace ApiCoverageTool.AssemblyProcessing
             if (!methodDefinition.HasBody)
                 return new HashSet<MethodInfo>();
 
-            assembliesToCheck ??= GetAvailaibleAssemblies(methodDefinition.Module.Assembly);
+            assembliesToCheck ??= GetAvailableAssemblies(methodDefinition.Module.Assembly);
 
             if (method.IsAsync())
                 return GetMethodCallsFromAsyncMethodBody(methodDefinition, assembliesToCheck);
@@ -101,17 +101,17 @@ namespace ApiCoverageTool.AssemblyProcessing
             return GetMethodCallsFromNonAsyncMethodBody(asyncMethodImplementation, assembliesToCheck);
         }
 
-        private static IList<string> GetAvailaibleAssemblies(
+        private static IList<string> GetAvailableAssemblies(
             AssemblyDefinition assembly,
             string includeAssemblyRegex = DefaultIncludeAssemblyMask,
             string excludeAssemblyRegex = DefaultExcludeAssemblyMask)
         {
             assembly.IsNotNullValidation(nameof(assembly));
 
-            var availaibleAssemblies = assembly.MainModule.AssemblyReferences.Select(a => a.Name).ToList();
-            availaibleAssemblies.Add(assembly.Name.Name);
+            var availableAssemblies = assembly.MainModule.AssemblyReferences.Select(a => a.Name).ToList();
+            availableAssemblies.Add(assembly.Name.Name);
 
-            var filteredNames = availaibleAssemblies
+            var filteredNames = availableAssemblies
                 .Where(name => Regex.IsMatch(name, includeAssemblyRegex))
                 .Where(name => !Regex.IsMatch(name, excludeAssemblyRegex))
                 .ToList();

@@ -50,7 +50,7 @@ namespace ApiCoverageTool
             if (!model.Paths.Any())
                 throw new InvalidSwaggerJsonException($"{nameof(swaggerJson)} doesn't have any endpoints.", swaggerJson);
 
-            if (model.Paths.Values.Where(p => p.Count == 0).Any())
+            if (model.Paths.Values.Any(p => p.Count == 0))
                 throw new InvalidSwaggerJsonException($"{nameof(swaggerJson)} has endpoints with no operations.", swaggerJson);
 
             return model;

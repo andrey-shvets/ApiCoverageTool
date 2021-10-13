@@ -17,7 +17,7 @@ namespace ApiCoverageTool.Tests
         [Fact]
         public void GetAllTests_WithNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => AssemblyPocessor.GetAllTests(null));
+            Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllTests(null));
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace ApiCoverageTool.Tests
                 "MockTestWithCycleInCallTree"
             };
 
-            var tests = AssemblyPocessor.GetAllTests(AssemblyUnderTest);
+            var tests = AssemblyProcessor.GetAllTests(AssemblyUnderTest);
 
             VerifyMethodsNames(tests, expected);
         }
@@ -51,7 +51,7 @@ namespace ApiCoverageTool.Tests
         public void GetMethodCallsFromMethodBody_WithNull_ThrowsArgumentNullException()
         {
             MethodInfo method = null;
-            Assert.Throws<ArgumentNullException>(() => AssemblyPocessor.GetMethodCallsFromMethodBody(method));
+            Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetMethodCallsFromMethodBody(method));
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace ApiCoverageTool.Tests
             var type = typeof(AssemblyUnderTests.MockTests);
             var method = type.GetMethod("MockTheory");
 
-            var methodsCalls = AssemblyPocessor.GetMethodCallsFromMethodBody(method);
+            var methodsCalls = AssemblyProcessor.GetMethodCallsFromMethodBody(method);
 
             var expected = new List<string>
             {
@@ -77,7 +77,7 @@ namespace ApiCoverageTool.Tests
             var type = typeof(AssemblyUnderTests.MockTests);
             var method = type.GetMethod("MockFactAsync");
 
-            var methodsCalls = AssemblyPocessor.GetMethodCallsFromMethodBody(method, new[] { "ApiCoverageTool.AssemblyUnderTests" });
+            var methodsCalls = AssemblyProcessor.GetMethodCallsFromMethodBody(method, new[] { "ApiCoverageTool.AssemblyUnderTests" });
 
             var expected = new List<string>
             {
@@ -97,7 +97,7 @@ namespace ApiCoverageTool.Tests
         public void GetAllMethodCalls_WithNull_ThrowsArgumentNullException()
         {
             MethodInfo method = null;
-            Assert.Throws<ArgumentNullException>(() => AssemblyPocessor.GetAllMethodCalls(method));
+            Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllMethodCalls(method));
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace ApiCoverageTool.Tests
             var type = typeof(AssemblyUnderTests.MoreMockTests);
             var method = type.GetMethod("MockTestNestedCall");
 
-            var methodsCalls = AssemblyPocessor.GetAllMethodCalls(method);
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
 
             var expected = new List<string>
             {
@@ -125,7 +125,7 @@ namespace ApiCoverageTool.Tests
             var type = typeof(TestClass);
             var method = type.GetMethod("AbstractMethod");
 
-            var methodsCalls = AssemblyPocessor.GetAllMethodCalls(method, new[] { typeof(AssemblyUnderTests.MockClass).Assembly.GetName().Name });
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method, new[] { typeof(AssemblyUnderTests.MockClass).Assembly.GetName().Name });
 
             var expected = new List<string>
             {
@@ -141,7 +141,7 @@ namespace ApiCoverageTool.Tests
             var type = typeof(AssemblyUnderTests.MoreMockTests);
             var method = type.GetMethod("MockTestNestedCallAsync");
 
-            var methodsCalls = AssemblyPocessor.GetAllMethodCalls(method);
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
 
             var expected = new List<string>
             {
@@ -160,7 +160,7 @@ namespace ApiCoverageTool.Tests
             var type = typeof(AssemblyUnderTests.MoreMockTests);
             var method = type.GetMethod("MockTestWithCycleInCallTree");
 
-            var methodsCalls = AssemblyPocessor.GetAllMethodCalls(method);
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
 
             var expected = new List<string>
             {

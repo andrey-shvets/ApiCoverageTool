@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace ApiCoverageTool.AssemblyProcessing
@@ -9,11 +10,7 @@ namespace ApiCoverageTool.AssemblyProcessing
 
         public bool IsTestMethod(MethodInfo method)
         {
-            foreach (var processor in TestProcessors)
-                if (processor.IsTestMethod(method))
-                    return true;
-
-            return false;
+            return TestProcessors.Any(processor => processor.IsTestMethod(method));
         }
     }
 }

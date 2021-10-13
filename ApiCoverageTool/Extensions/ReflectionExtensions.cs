@@ -81,7 +81,7 @@ namespace ApiCoverageTool.Extensions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fialed to convert MethodDefinition to MethodInfo for method '{methodDefinition.FullName}'. Error: {ex.Message}");
+                Console.WriteLine($"Failed to convert MethodDefinition to MethodInfo for method '{methodDefinition.FullName}'. Error: {ex.Message}");
                 throw;
             }
         }
@@ -144,14 +144,12 @@ namespace ApiCoverageTool.Extensions
 
         private static string GetReflectionName(this TypeReference type)
         {
-            if (type.IsGenericInstance)
-            {
-                var genericInstance = (GenericInstanceType)type;
-                var genericArguments = string.Join(",", genericInstance.GenericArguments.Select(p => p.GetReflectionName()).ToList());
-                return string.Format($"{genericInstance.Namespace}.{type.Name}[{genericArguments}]");
-            }
+            if (!type.IsGenericInstance)
+                return type.FullName;
 
-            return type.FullName;
+            var genericInstance = (GenericInstanceType)type;
+            var genericArguments = string.Join(",", genericInstance.GenericArguments.Select(p => p.GetReflectionName()).ToList());
+            return string.Format($"{genericInstance.Namespace}.{type.Name}[{genericArguments}]");
         }
     }
 }

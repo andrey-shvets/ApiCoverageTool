@@ -16,7 +16,7 @@ namespace ApiCoverageTool.Coverage
             testsAssembly.IsNotNullValidation(nameof(testsAssembly));
             clientTypes.IsNotNullValidation(nameof(clientTypes));
 
-            var allTests = AssemblyPocessor.GetAllTests(testsAssembly);
+            var allTests = AssemblyProcessor.GetAllTests(testsAssembly);
 
             return GetTestCoverage(allTests, clientTypes);
         }
@@ -45,15 +45,15 @@ namespace ApiCoverageTool.Coverage
         {
             var clientCalls = new List<EndpointInfo>();
             var restProcessor = new T();
-            var restMethodsCalled = AssemblyPocessor.GetAllMethodCalls(method)
+            var restMethodsCalled = AssemblyProcessor.GetAllMethodCalls(method)
                 .Where(m => restProcessor.IsRestMethod(m))
                 .Where(m => clientTypes.Contains(m.DeclaringType))
                 .ToList();
-            var endpoinds = restMethodsCalled
+            var endpoints = restMethodsCalled
                 .Select(m => new EndpointInfo(restProcessor.GetRestMethod(m), restProcessor.GetFullPath(m)))
                 .Distinct().ToList();
 
-            return endpoinds;
+            return endpoints;
         }
     }
 }

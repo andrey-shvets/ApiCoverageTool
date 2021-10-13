@@ -22,8 +22,8 @@ namespace ApiCoverageTool.RestClient
             if (!clientType.IsInterface)
                 throw new ArgumentException($"{nameof(clientType)} parameter is expected to be an interface.", nameof(clientType));
 
-            var methodsRetriver = new T();
-            var mappedMethods = methodsRetriver.GetAllMappedEndpoints(clientType);
+            var methodsRetriever = new T();
+            var mappedMethods = methodsRetriever.GetAllMappedEndpoints(clientType);
 
             if (!mappedMethods.Any())
                 throw new ArgumentException($"Provided interface has no methods mapped to endpoints.");
