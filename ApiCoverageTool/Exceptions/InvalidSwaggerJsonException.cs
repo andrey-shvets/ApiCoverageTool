@@ -15,9 +15,7 @@ namespace ApiCoverageTool.Exceptions
         { }
 
         public InvalidSwaggerJsonException(string message, string invalidJson, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) =>
             InvalidJson = invalidJson;
-        }
     }
 }

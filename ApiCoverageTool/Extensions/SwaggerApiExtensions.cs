@@ -8,10 +8,7 @@ namespace ApiCoverageTool.Extensions
 {
     public static class SwaggerApiExtensions
     {
-        public static IEnumerable<string> ToMethodPathList(this IEnumerable<EndpointInfo> swaggerEndpoints)
-        {
-            return swaggerEndpoints.Select(endpointInfo => endpointInfo.ToString());
-        }
+        public static IEnumerable<string> ToMethodPathList(this IEnumerable<EndpointInfo> swaggerEndpoints) => swaggerEndpoints.Select(endpointInfo => endpointInfo.ToString());
 
         public static HttpMethod ToHttpMethod(this string httpMethodName) => httpMethodName?.ToLower() switch
         {

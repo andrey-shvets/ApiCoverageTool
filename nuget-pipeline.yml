@@ -1,0 +1,122 @@
+name: ApiCOverageTool $(Major).$(Minor)$(Rev:.r) Nuget Publish
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - '*'
+    exclude:
+      - '**/*.md'
+
+parameters:
+  - name: buildConfiguration
+    displayName: Build Configuration
+    type: string
+    default: Release
+    values:
+    - Release
+    - Debug
+  - name: realm
+    displayName: Realm
+    type: string
+    default: DEV
+    values:
+    - DEV
+  - name: skipTests
+    displayName: Skip Tests
+    type: boolean
+    default: false
+  - name: forceNuGetPush
+    displayName: Force NuGet Push (for non-main branch)
+    type: boolean
+    default: false
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  ${{ if eq( variables['Build.SourceBranchName'], 'main' ) }}:
+    packageVersionNumber: '$(MajorMinorPatch)'
+    isMainBranch: true
+  ${{ if ne( variables['Build.SourceBranchName'], 'main' ) }}:
+    packageVersionNumber: '$(LegacySemVer)'
+    isMainBranch: false
+  buildProjectPath: '**/*.csproj'
+  testProjectsFilter: '$(System.DefaultWorkingDirectory)/tests/*.Tests/*.csproj'
+  publishProject: '$(System.DefaultWorkingDirectory)/ApiCoverageTool/ApiCoverageTool.csproj'
+  artifactName: 'VavaCars.ApiCoverageTool.nupkg'
+  nugetPackagesToPack: '$(System.DefaultWorkingDirectory)/ApiCoverageTool/ApiCoverageTool.csproj'
+  nugetPathToPublish: '$(Build.ArtifactStagingDirectory)/NugetPackage'
+
+steps:
+  - task: gitversion/setup@0
+    inputs:
+      versionSpec: '5.x'
+
+  - task: gitversion/execute@0
+
+  - script: 'echo "Version for publishing will be: $(packageVersionNumber)"'
+    displayName: Version to publish
+
+  - task: NuGetToolInstaller@1
+    displayName: Configure NuGet
+
+  - task: DotNetCoreCLI@2
+    displayName: dotnet build
+    inputs:
+      command: 'build'
+      projects: $(buildProjectPath)
+
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
+    enabled: ${{ not(parameters.skipTests) }}
+    inputs:
+      command: 'test'
+      projects: $(testProjectsFilter)
+      arguments: '--configuration ${{ parameters.buildConfiguration }}'
+
+  - task: DotNetCoreCLI@2
+    displayName: dotnet publish
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: $(publishProject)
+      arguments: '-o $(Build.ArtifactStagingDirectory)/Output'
+      zipAfterPublish: true
+      modifyOutputPath: true
+      configuration: Release
+
+  - task: DotNetCoreCLI@2
+    displayName: Pack NuGet
+    inputs:
+      command: 'pack'
+      packagesToPack: $(nugetPackagesToPack)
+      outputDir: $(nugetPathToPublish)
+      versioningScheme: byEnvVar
+      versionEnvVar: packageVersionNumber
+      includeSymbols: true
+      buildProperties: 'SymbolPackageFormat=snupkg'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: $(nugetPathToPublish)
+      artifactName: $(artifactName)
+      publishLocation: 'Container'
+
+  - task: NuGetAuthenticate@0
+    displayName: 'NuGet Authenticate'
+
+  - task: NuGetCommand@2
+    displayName: NuGet push
+    enabled: ${{ or(eq(variables.isMainBranch, true), parameters.forceNuGetPush) }}
+    inputs:
+      command: push
+      feedsToUse: 'select'
+      vstsFeed: 'EnzoBackend/vavacars-enzobackend'
+      nuGetFeedType: internal
+      publishVstsFeed: 'vavacars-enzobackend'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/NugetPackage/**/*.nupkg'
+      allowPackageConflicts: false

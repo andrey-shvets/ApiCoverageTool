@@ -26,10 +26,7 @@ namespace ApiCoverageTool.Extensions
                 currentTypeDefinition.Module.Assembly.Name.FullName == typeDefinition.Module.Assembly.Name.FullName;
         }
 
-        public static bool SameAs(this Type type, TypeDefinition typeDefinition)
-        {
-            return typeDefinition.SameAs(type);
-        }
+        public static bool SameAs(this Type type, TypeDefinition typeDefinition) => typeDefinition.SameAs(type);
 
         public static bool SameAs(this MethodDefinition methodDefinition, MethodInfo methodInfo)
         {
@@ -48,10 +45,7 @@ namespace ApiCoverageTool.Extensions
             return methodDefinition.ToMethodInfo() == methodInfo;
         }
 
-        public static bool SameAs(this MethodInfo methodInfo, MethodDefinition methodDefinition)
-        {
-            return methodDefinition.SameAs(methodInfo);
-        }
+        public static bool SameAs(this MethodInfo methodInfo, MethodDefinition methodDefinition) => methodDefinition.SameAs(methodInfo);
 
         public static void IsNotNullValidation(this object obj, string paramName)
         {

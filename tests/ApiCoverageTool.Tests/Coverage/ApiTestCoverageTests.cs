@@ -16,16 +16,10 @@ namespace ApiCoverageTool.Tests.Coverage
         private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
 
         [Fact]
-        public void GetCoverage_WithNullServiceEndpoints_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>(() => GetTestCoverage(null, Array.Empty<Type>()));
-        }
+        public void GetCoverage_WithNullServiceEndpoints_ThrowsArgumentException() => Assert.Throws<ArgumentNullException>(() => GetTestCoverage(null, Array.Empty<Type>()));
 
         [Fact]
-        public void GetCoverage_WithNullMappedEndpoints_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>(() => GetTestCoverage(Assembly.GetCallingAssembly(), null));
-        }
+        public void GetCoverage_WithNullMappedEndpoints_ThrowsArgumentException() => Assert.Throws<ArgumentNullException>(() => GetTestCoverage(Assembly.GetCallingAssembly(), null));
 
         [Fact]
         public void GetCoverage_ProvidedAssemblyWithTests_ReturnsListOfEndpointsCoveredWithTests()
@@ -50,9 +44,6 @@ namespace ApiCoverageTool.Tests.Coverage
             actual.Should().BeEquivalentTo(expected);
         }
 
-        private static IList<string> ToStringList(List<MethodInfo> methods)
-        {
-            return methods?.Select(m => m.Name).ToList();
-        }
+        private static IList<string> ToStringList(List<MethodInfo> methods) => methods?.Select(m => m.Name).ToList();
     }
 }

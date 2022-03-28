@@ -6,7 +6,7 @@ using ApiCoverageTool.Tests.ObjectsUnderTests;
 using Xunit;
 using static ApiCoverageTool.Tests.AssemblyProcessing.AssemblyProcessorTestsHelper;
 
-namespace ApiCoverageTool.Tests
+namespace ApiCoverageTool.Tests.AssemblyProcessing
 {
     public class AssemblyProcessorTests
     {
@@ -15,10 +15,7 @@ namespace ApiCoverageTool.Tests
         #region GetAllTests
 
         [Fact]
-        public void GetAllTests_WithNull_ThrowsArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllTests(null));
-        }
+        public void GetAllTests_WithNull_ThrowsArgumentNullException() => Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllTests(null));
 
         [Fact]
         public void GetAllTests_GivenAssemblyWithXUnitTests_ReturnsListOfTestMethods()

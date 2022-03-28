@@ -8,7 +8,7 @@ using Xunit;
 
 namespace ApiCoverageTool.Tests
 {
-    public class SwaggerApiExtentionTests
+    public class SwaggerApiExtensionTests
     {
         [Fact]
         public void ToMethodPathList_OnEmptyEndpointsList_ReturnsEmptyList()
@@ -53,9 +53,7 @@ namespace ApiCoverageTool.Tests
         [InlineData("")]
         [InlineData("unknown")]
         [InlineData("getmethod")]
-        public void ToHttpMethod_WithInvalidHttpMethodName_ThrowsArgumentException(string methodName)
-        {
+        public void ToHttpMethod_WithInvalidHttpMethodName_ThrowsArgumentException(string methodName) =>
             Assert.Throws<ArgumentException>(() => methodName.ToHttpMethod());
-        }
     }
 }

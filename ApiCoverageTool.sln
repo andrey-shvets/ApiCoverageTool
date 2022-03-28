@@ -1,13 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCoverageTool", "ApiCoverageTool\ApiCoverageTool.csproj", "{E099F669-CE38-4183-9D54-BF17B32F5032}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9D1A1E1-F0EE-4FC5-B1F0-1A5DD3C7FFBF}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		build-and-test-pipeline.yml = build-and-test-pipeline.yml
+		GitVersion.yml = GitVersion.yml
+		nuget-pipeline.yml = nuget-pipeline.yml
 		README.md = README.md
 	EndProjectSection
 EndProject

@@ -5,10 +5,8 @@ namespace ApiCoverageTool.AssemblyProcessing
 {
     public class XUnitTestsProcessor : ITestsProcessor
     {
-        public bool IsTestMethod(MethodInfo method)
-        {
-            return method.GetCustomAttribute(typeof(FactAttribute)) is not null ||
-                method.GetCustomAttribute(typeof(TheoryAttribute)) is not null;
-        }
+        public bool IsTestMethod(MethodInfo method) =>
+            method.GetCustomAttribute(typeof(FactAttribute)) is not null ||
+            method.GetCustomAttribute(typeof(TheoryAttribute)) is not null;
     }
 }

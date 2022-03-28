@@ -11,10 +11,7 @@ namespace ApiCoverageTool.RestClient
 {
     public class RestEaseMethodsProcessor : IRestClientMethodsProcessor
     {
-        public bool IsRestMethod(MethodInfo method)
-        {
-            return GetRestMethod(method) is not null;
-        }
+        public bool IsRestMethod(MethodInfo method) => GetRestMethod(method) is not null;
 
         public HttpMethod GetRestMethod(MethodInfo method)
         {

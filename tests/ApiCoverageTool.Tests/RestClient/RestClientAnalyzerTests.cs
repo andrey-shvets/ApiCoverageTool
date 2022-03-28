@@ -14,17 +14,12 @@ namespace ApiCoverageTool.Tests.RestClient
     public class RestClientAnalyzerTests
     {
         #region GetRestMethodsFromClient
-        [Fact]
-        public void GetRestMethodsFromClient_GivenClass_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => GetRestMethodsFromClient(typeof(TestClientClass)));
-        }
 
         [Fact]
-        public void GetRestMethodsFromClient_GivenControllerWithNoMappedServiceMethods_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => GetRestMethodsFromClient(typeof(ITestControllerNoMethods)));
-        }
+        public void GetRestMethodsFromClient_GivenClass_ThrowsArgumentException() => Assert.Throws<ArgumentException>(() => GetRestMethodsFromClient(typeof(TestClientClass)));
+
+        [Fact]
+        public void GetRestMethodsFromClient_GivenControllerWithNoMappedServiceMethods_ThrowsArgumentException() => Assert.Throws<ArgumentException>(() => GetRestMethodsFromClient(typeof(ITestControllerNoMethods)));
 
         [Fact]
         public void GetRestMethodsFromClient_GivenControllerInterface_ReturnsListOfOperationsAndEndpoints()
@@ -61,21 +56,16 @@ namespace ApiCoverageTool.Tests.RestClient
 
             ValidateMappedEndpoints(endpoints, expectedEndpoints);
         }
+
         #endregion GetRestMethodsFromClient
 
-
         #region GetRestMethodsFromClients
-        [Fact]
-        public void GetRestMethodsFromClients_GivenClass_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => GetRestMethodsFromClients(typeof(ITestController), typeof(TestClientClass)));
-        }
 
         [Fact]
-        public void GetRestMethodsFromClients_GivenControllerWithNoMappedServiceMethods_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => GetRestMethodsFromClients(typeof(ITestControllerNoMethods), typeof(ITestController)));
-        }
+        public void GetRestMethodsFromClients_GivenClass_ThrowsArgumentException() => Assert.Throws<ArgumentException>(() => GetRestMethodsFromClients(typeof(ITestController), typeof(TestClientClass)));
+
+        [Fact]
+        public void GetRestMethodsFromClients_GivenControllerWithNoMappedServiceMethods_ThrowsArgumentException() => Assert.Throws<ArgumentException>(() => GetRestMethodsFromClients(typeof(ITestControllerNoMethods), typeof(ITestController)));
 
         [Fact]
         public void GetRestMethodsFromClients_GivenControllerInterfaces_ReturnsListOfOperationsAndEndpoints()
@@ -115,6 +105,7 @@ namespace ApiCoverageTool.Tests.RestClient
 
             ValidateMappedEndpoints(endpoints, expectedEndpoints);
         }
+
         #endregion GetRestMethodsFromClients
 
         private static void ValidateMappedEndpoints(IEnumerable<MappedEndpointInfo> mappedEndpoints, IEnumerable<(HttpMethod Method, string Path, string MappedMethodName)> expected)

@@ -11,19 +11,15 @@ namespace ApiCoverageTool.Tests
     public class SwaggerParserTests
     {
         [Fact]
-        public void ParseSwaggerApi_WithNullJson_ThrowsArgumentNullException()
-        {
+        public void ParseSwaggerApi_WithNullJson_ThrowsArgumentNullException() =>
             Assert.Throws<ArgumentNullException>(() => SwaggerParser.ParseSwaggerApi(null));
-        }
 
         [Theory]
         [InlineData("")]
         [InlineData("{")]
         [InlineData("{\"}")]
-        public void ParseSwaggerApi_WithInvalidJson_ThrowsInvalidSwaggerJsonException(string input)
-        {
+        public void ParseSwaggerApi_WithInvalidJson_ThrowsInvalidSwaggerJsonException(string input) =>
             Assert.Throws<InvalidSwaggerJsonException>(() => SwaggerParser.ParseSwaggerApi(input));
-        }
 
         [Fact]
         public void ParseSwaggerApi_WithEmptySwaggerJson_ThrowsInvalidSwaggerJsonException()

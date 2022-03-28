@@ -4,9 +4,6 @@
     {
         public abstract string AbstractMethod();
 
-        public virtual object PolymorphismMethod(object obj)
-        {
-            return obj;
-        }
+        public virtual object PolymorphismMethod(object obj) => obj;
     }
 }

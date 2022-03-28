@@ -15,16 +15,12 @@ namespace ApiCoverageTool.Tests.Coverage
     public class ApiClientCoverageTests
     {
         [Fact]
-        public void GetCoverageByClient_WithNullServiceEndpoints_ThrowsArgumentException()
-        {
+        public void GetCoverageByClient_WithNullServiceEndpoints_ThrowsArgumentException() =>
             Assert.Throws<ArgumentNullException>(() => GetCoverageByClient(null, new List<MappedEndpointInfo>()));
-        }
 
         [Fact]
-        public void GetCoverageByClient_WithNullMappedEndpoints_ThrowsArgumentException()
-        {
+        public void GetCoverageByClient_WithNullMappedEndpoints_ThrowsArgumentException() =>
             Assert.Throws<ArgumentNullException>(() => GetCoverageByClient(new List<EndpointInfo>(), null));
-        }
 
         [Fact]
         public void GetCoverageByClientFromFile_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
@@ -59,9 +55,6 @@ namespace ApiCoverageTool.Tests.Coverage
             actual.Should().BeEquivalentTo(expected);
         }
 
-        private static IList<string> ToStringList(List<MethodInfo> methods)
-        {
-            return methods.Select(m => m.Name).ToList();
-        }
+        private static IList<string> ToStringList(List<MethodInfo> methods) => methods.Select(m => m.Name).ToList();
     }
 }

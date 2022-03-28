@@ -1,0 +1,45 @@
+name: ApiCOverageTool $(Major).$(Minor)$(Rev:.r) Test
+
+trigger:
+  batch: true
+  paths:
+    include:
+      - '*'
+    exclude:
+      - '**/*.md'
+
+parameters:
+  - name: buildConfiguration
+    displayName: Build Configuration
+    type: string
+    default: Release
+    values:
+    - Release
+    - Debug
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildProjectPath: '**/*.csproj'
+  testProjectsFilter: '$(System.DefaultWorkingDirectory)/tests/*.Tests/*.csproj'
+
+steps:
+  - task: gitversion/setup@0
+    inputs:
+      versionSpec: '5.x'
+
+  - task: gitversion/execute@0
+
+  - task: DotNetCoreCLI@2
+    displayName: dotnet build
+    inputs:
+      command: 'build'
+      projects: $(buildProjectPath)
+
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
+    inputs:
+      command: 'test'
+      projects: $(testProjectsFilter)
+      arguments: '--configuration ${{ parameters.buildConfiguration }}'

@@ -1,6 +1,4 @@
-﻿// ReSharper disable UnusedMember.Global
-// ReSharper disable MemberCanBeMadeStatic.Local
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using RestEase;
 
 namespace ApiCoverageTool.Tests.ObjectsUnderTests
@@ -8,25 +6,13 @@ namespace ApiCoverageTool.Tests.ObjectsUnderTests
     public class TestClass : TestClassBase
     {
         [Get]
-        public object PolymorphismMethod()
-        {
-            return null;
-        }
+        public object PolymorphismMethod() => null;
 
-        public override object PolymorphismMethod(object obj)
-        {
-            return obj;
-        }
+        public override object PolymorphismMethod(object obj) => obj;
 
-        public async Task<object> AsyncMethod(object obj)
-        {
-            return await Task.FromResult(obj);
-        }
+        public async Task<object> AsyncMethod(object obj) => await Task.FromResult(obj);
 
-        public T GenericMethod<T>(T obj)
-        {
-            return obj;
-        }
+        public T GenericMethod<T>(T obj) => obj;
 
         public override string AbstractMethod()
         {

@@ -5,9 +5,6 @@ namespace ApiCoverageTool.AssemblyProcessing
 {
     public class MSTestTestsProcessor : ITestsProcessor
     {
-        public bool IsTestMethod(MethodInfo method)
-        {
-            return method.GetCustomAttribute(typeof(TestMethodAttribute)) is not null;
-        }
+        public bool IsTestMethod(MethodInfo method) => method.GetCustomAttribute(typeof(TestMethodAttribute)) is not null;
     }
 }

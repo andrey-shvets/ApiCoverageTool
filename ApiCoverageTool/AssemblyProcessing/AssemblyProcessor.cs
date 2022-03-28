@@ -121,27 +121,16 @@ namespace ApiCoverageTool.AssemblyProcessing
 
         #region Extensions
 
-        private static bool IsAsync(this MethodInfo method)
-        {
-            return method.GetCustomAttribute<AsyncStateMachineAttribute>() is not null;
-        }
+        private static bool IsAsync(this MethodInfo method) => method.GetCustomAttribute<AsyncStateMachineAttribute>() is not null;
 
-        private static bool IsFromAssemblies(this MethodDefinition method, IEnumerable<string> assemblies)
-        {
-            return assemblies.Contains(method.Module.Assembly.Name.Name);
-        }
+        private static bool IsFromAssemblies(this MethodDefinition method, IEnumerable<string> assemblies) => assemblies.Contains(method.Module.Assembly.Name.Name);
 
-        private static bool IsMethodCall(this Instruction instruction)
-        {
-            return instruction.OpCode == OpCodes.Call
-                || instruction.OpCode == OpCodes.Calli
-                || instruction.OpCode == OpCodes.Callvirt;
-        }
+        private static bool IsMethodCall(this Instruction instruction) =>
+            instruction.OpCode == OpCodes.Call
+            || instruction.OpCode == OpCodes.Calli
+            || instruction.OpCode == OpCodes.Callvirt;
 
-        private static bool IsLambdaExpression(this Instruction instruction)
-        {
-            return instruction.OpCode == OpCodes.Ldftn;
-        }
+        private static bool IsLambdaExpression(this Instruction instruction) => instruction.OpCode == OpCodes.Ldftn;
 
         #endregion Extensions
     }

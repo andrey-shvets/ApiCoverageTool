@@ -43,12 +43,12 @@ namespace ApiCoverageTool.Coverage
 
         private static IList<EndpointInfo> GetAllEndpointsCalledFromMethod(MethodInfo method, Type[] clientTypes)
         {
-            var clientCalls = new List<EndpointInfo>();
             var restProcessor = new T();
             var restMethodsCalled = AssemblyProcessor.GetAllMethodCalls(method)
                 .Where(m => restProcessor.IsRestMethod(m))
                 .Where(m => clientTypes.Contains(m.DeclaringType))
                 .ToList();
+
             var endpoints = restMethodsCalled
                 .Select(m => new EndpointInfo(restProcessor.GetRestMethod(m), restProcessor.GetFullPath(m)))
                 .Distinct().ToList();
