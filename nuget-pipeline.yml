@@ -115,7 +115,7 @@ steps:
     inputs:
       command: push
       feedsToUse: 'select'
-      vstsFeed: 'EnzoBackend/vavacars-enzobackend'
+      vstsFeed: 'VavaCars/vavacars-enzobackend'
       nuGetFeedType: internal
       publishVstsFeed: 'vavacars-enzobackend'
       packagesToPush: '$(Build.ArtifactStagingDirectory)/NugetPackage/**/*.nupkg'
