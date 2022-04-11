@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -91,14 +92,52 @@ namespace ApiCoverageTool.AssemblyProcessing
 
         private static HashSet<MethodInfo> GetMethodCallsFromAsyncMethodBody(MethodDefinition method, IEnumerable<string> assembliesToCheck)
         {
-            var asyncMethodStateMachineInstanceCreation = method.Body.Instructions
-                .First(instruction => instruction.OpCode == OpCodes.Newobj)
-                .Operand as MethodReference;
+            var asyncMethodStateMachine = RetrieveAsyncMethodStateMachineType(method);
 
-            var asyncMethodStateMachine = asyncMethodStateMachineInstanceCreation.Resolve().DeclaringType;
-            var asyncMethodImplementation = asyncMethodStateMachine.Methods.First(m => m.Name == "MoveNext");
+            if (asyncMethodStateMachine is null)
+                throw new InvalidOperationException($"Failed to retrieve state machine class for async method {method.Name}");
+
+            var asyncMethodImplementation = asyncMethodStateMachine.Methods.FirstOrDefault(m => m.Name == "MoveNext");
+
+            if (asyncMethodImplementation is null)
+                throw new InvalidOperationException($"Failed to retrieve method definition for async method {method.Name}");
 
             return GetMethodCallsFromNonAsyncMethodBody(asyncMethodImplementation, assembliesToCheck);
+        }
+
+        private static TypeDefinition RetrieveAsyncMethodStateMachineType(MethodDefinition method) =>
+            TryRetrieveAsyncMethodStateMachineTypeFromCreationInstruction(method) ??
+            TryRetrieveAsyncMethodStateMachineTypeFromStartInstruction(method);
+
+        private static TypeDefinition TryRetrieveAsyncMethodStateMachineTypeFromCreationInstruction(MethodDefinition method)
+        {
+            var stateMachineInstanceCreationInstruction = method.Body.Instructions
+                .FirstOrDefault(instruction => instruction.OpCode == OpCodes.Newobj);
+
+            if (stateMachineInstanceCreationInstruction is null)
+                return null;
+
+            var asyncMethodStateMachineInstanceCreation = stateMachineInstanceCreationInstruction.Operand as MethodReference;
+            var asyncMethodStateMachine = asyncMethodStateMachineInstanceCreation!.Resolve().DeclaringType;
+
+            return asyncMethodStateMachine;
+        }
+
+        private static TypeDefinition TryRetrieveAsyncMethodStateMachineTypeFromStartInstruction(MethodDefinition method)
+        {
+            var state1 = method.Body.Instructions
+                .Where(instruction => instruction.OpCode == OpCodes.Call).Select(instruction => instruction.Operand).OfType<MethodReference>().ToList();
+
+            var stateMachineInstanceCreationInstruction = method.Body.Instructions
+                .FirstOrDefault(instruction => instruction.Operand is GenericInstanceMethod);
+
+            if (stateMachineInstanceCreationInstruction is null)
+                return null;
+
+            var asyncMethodStateMachineInstanceCreation = stateMachineInstanceCreationInstruction.Operand as GenericInstanceMethod;
+            var asyncMethodStateMachine = asyncMethodStateMachineInstanceCreation!.GenericArguments.First().Resolve();
+
+            return asyncMethodStateMachine;
         }
 
         private static IList<string> GetAvailableAssemblies(
