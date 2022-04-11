@@ -14,6 +14,6 @@ namespace ApiCoverageTool.RestClient
 
         public string GetFullPath(MethodInfo method);
 
-        public IList<MappedEndpointInfo> GetAllMappedEndpoints(Type clientType);
+        public IList<MappedEndpointInfo> GetAllMappedEndpoints(Type controller);
     }
 }

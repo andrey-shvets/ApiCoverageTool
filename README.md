@@ -4,7 +4,7 @@ Provides test coverage for the API (right now only RestEase is supported).
 # Features
 ### Test coverage
 
-To get test coverage use `GetTestCoverage` method from `ApiTestCoverage` class.
+To get test coverage use `GetTestCoverage` method from `ControllerMethodsTestCoverage` class.
 As parameters `GetTestCoverage` takes an Assembly with tests then need to be processed and list of interfaces that describe rest controllers (right now only RestEase is supported).
 `GetTestCoverage` returns a Dictionary where the endpoint's full path is a key, and the list of test methods is a value.
 If the endpoint method is not called in any test it won't be listed.
@@ -16,12 +16,12 @@ var constrollers = new Type[]
 };
 
 var assembly = Assembly.GetExecutingAssembly();
-var testCoverage = ApiTestCoverage<RestEaseMethodsProcessor>.GetTestCoverage(assembly, constrollers);
+var testCoverage = ControllerMethodsTestCoverage<RestEaseMethodsProcessor>.GetTestCoverage(assembly, constrollers);
 ```
 
-Insted of `ApiTestCoverage<RestEaseMethodsProcessor>.GetTestCoverage(assembly, constrollers)` call, use `using static` directive:
+Insted of `ControllerMethodsTestCoverage<RestEaseMethodsProcessor>.GetTestCoverage(assembly, constrollers)` call, use `using static` directive:
 ```
-using static ApiCoverageTool.Coverage.ApiTestCoverage<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
+using static ApiCoverageTool.Coverage.ControllerMethodsTestCoverage<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
 ...
 var testCoverage = GetTestCoverage(assembly, constrollers);
 ```
@@ -40,12 +40,12 @@ GET /api/vehiclecommon/getmileagelist
 
 ### Endpoints mapping by rest clients
 
-`ApiClientCoverage` class contains methods that can return endpoints coverage by the REST clients.
+`ApiControllerMapping` class contains methods that can return endpoints coverage by the REST clients.
 Returns a list of endpoints that have implemented methods in specified controllers. And the list of endpoints that don't have mapped methods.
 There are three methods that differ by the source of swagger OpenAPI specification.
-`GetCoverageByClientFromUri` - from the uri to service swagger.json.
-`GetCoverageByClientFromFile` - from json file.
-`GetCoverageByClient` - from string.
+`GetMappingByControllerFromUri` - from the uri to service swagger.json.
+`GetMappingByControllerFromFile` - from json file.
+`GetMappingByController` - from string.
 
 ```
 var constrollers = new Type[]
@@ -55,7 +55,7 @@ var constrollers = new Type[]
 };
 
 var swaggerJsonUri = new Uri("https://customer-api-***.azurewebsites.net/swagger/v1/swagger.json");
-var resEndpointsCoverage = await GetCoverageByClientFromUri(swaggerJsonUri, constrollers);
+var resEndpointsCoverage = await GetMappingByControllerFromUri(swaggerJsonUri, constrollers);
 ```
 
 Result example:

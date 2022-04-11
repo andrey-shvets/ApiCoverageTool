@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using ApiCoverageTool.AssemblyUnderTests.Controllers;
 using ApiCoverageTool.Models;
-using FluentAssertions;
+using ApiCoverageTool.Tests.Helpers;
 using Xunit;
-using static ApiCoverageTool.Coverage.ApiTestCoverage<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
+using static ApiCoverageTool.Coverage.ControllerMethodsTestCoverage<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
 
 namespace ApiCoverageTool.Tests.Coverage
 {
-    public class ApiTestCoverageTests
+    public class ControllerMethodsTestCoverageTests
     {
         private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
 
@@ -34,16 +33,7 @@ namespace ApiCoverageTool.Tests.Coverage
 
             var result = GetTestCoverage(AssemblyUnderTest, typeof(ITestController));
 
-            ValidateMappedEndpoints(result, expectedMapped);
+            result.ValidateMappedEndpoints(expectedMapped);
         }
-
-        private static void ValidateMappedEndpoints(Dictionary<EndpointInfo, List<MethodInfo>> mappedEndpoints, List<(EndpointInfo Endpoint, List<string> Methods)> expected)
-        {
-            var actual = mappedEndpoints.Keys.Select(e => (e, mappedEndpoints is null ? null : ToStringList(mappedEndpoints[e]))).ToList();
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        private static IList<string> ToStringList(List<MethodInfo> methods) => methods?.Select(m => m.Name).ToList();
     }
 }

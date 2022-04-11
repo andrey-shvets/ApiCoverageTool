@@ -4,8 +4,8 @@ namespace ApiCoverageTool.Models
 {
     public record EndpointInfo
     {
-        public HttpMethod RestMethod { get; init; }
-        public string Path { get; init; }
+        public HttpMethod RestMethod { get; private set; }
+        public string Path { get; private set; }
 
         public EndpointInfo(HttpMethod restMethod, string path)
         {

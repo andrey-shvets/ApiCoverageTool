@@ -42,13 +42,13 @@ namespace ApiCoverageTool.RestClient
             return $"/{basePath}/{path}";
         }
 
-        public IList<MappedEndpointInfo> GetAllMappedEndpoints(Type clientType)
+        public IList<MappedEndpointInfo> GetAllMappedEndpoints(Type controller)
         {
-            var mappedGetMethods = RetrieveMappedRestMethods<GetAttribute>(clientType, HttpMethod.Get);
-            var mappedPostMethods = RetrieveMappedRestMethods<PostAttribute>(clientType, HttpMethod.Post);
-            var mappedPutMethods = RetrieveMappedRestMethods<PutAttribute>(clientType, HttpMethod.Put);
-            var mappedPatchMethods = RetrieveMappedRestMethods<PatchAttribute>(clientType, HttpMethod.Patch);
-            var mappedDeleteMethods = RetrieveMappedRestMethods<DeleteAttribute>(clientType, HttpMethod.Delete);
+            var mappedGetMethods = RetrieveMappedRestMethods<GetAttribute>(controller, HttpMethod.Get);
+            var mappedPostMethods = RetrieveMappedRestMethods<PostAttribute>(controller, HttpMethod.Post);
+            var mappedPutMethods = RetrieveMappedRestMethods<PutAttribute>(controller, HttpMethod.Put);
+            var mappedPatchMethods = RetrieveMappedRestMethods<PatchAttribute>(controller, HttpMethod.Patch);
+            var mappedDeleteMethods = RetrieveMappedRestMethods<DeleteAttribute>(controller, HttpMethod.Delete);
 
             var mappedMethods = mappedGetMethods.ToList();
             mappedMethods.AddRange(mappedPostMethods);
@@ -59,10 +59,10 @@ namespace ApiCoverageTool.RestClient
             return mappedMethods;
         }
 
-        private IEnumerable<MappedEndpointInfo> RetrieveMappedRestMethods<T>(Type clientType, HttpMethod httpMethod)
+        private IEnumerable<MappedEndpointInfo> RetrieveMappedRestMethods<T>(Type controller, HttpMethod httpMethod)
             where T : RequestAttributeBase
         {
-            var mappedMethods = clientType.GetMethods().Where(m => m.GetCustomAttributes<T>().Any()).ToList();
+            var mappedMethods = controller.GetMethods().Where(m => m.GetCustomAttributes<T>().Any()).ToList();
 
             foreach (var method in mappedMethods)
                 yield return new MappedEndpointInfo(httpMethod, GetFullPath(method), method);

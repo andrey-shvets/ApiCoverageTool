@@ -9,25 +9,25 @@ using ApiCoverageTool.RestClient;
 
 namespace ApiCoverageTool.Coverage
 {
-    public static class ApiTestCoverage<T> where T : IRestClientMethodsProcessor, new()
+    public static class ControllerMethodsTestCoverage<T> where T : IRestClientMethodsProcessor, new()
     {
-        public static Dictionary<EndpointInfo, List<MethodInfo>> GetTestCoverage(Assembly testsAssembly, params Type[] clientTypes)
+        public static Dictionary<EndpointInfo, List<MethodInfo>> GetTestCoverage(Assembly testsAssembly, params Type[] controllers)
         {
             testsAssembly.IsNotNullValidation(nameof(testsAssembly));
-            clientTypes.IsNotNullValidation(nameof(clientTypes));
+            controllers.IsNotNullValidation(nameof(controllers));
 
             var allTests = AssemblyProcessor.GetAllTests(testsAssembly);
 
-            return GetTestCoverage(allTests, clientTypes);
+            return GetTestCoverage(allTests, controllers);
         }
 
-        private static Dictionary<EndpointInfo, List<MethodInfo>> GetTestCoverage(IEnumerable<MethodInfo> allTests, Type[] clientTypes)
+        private static Dictionary<EndpointInfo, List<MethodInfo>> GetTestCoverage(IEnumerable<MethodInfo> allTests, Type[] controllers)
         {
             var result = new Dictionary<EndpointInfo, List<MethodInfo>>();
 
             foreach (var test in allTests)
             {
-                var endpointsCalled = GetAllEndpointsCalledFromMethod(test, clientTypes);
+                var endpointsCalled = GetAllEndpointsCalledFromMethod(test, controllers);
 
                 foreach (var endpoints in endpointsCalled)
                 {
@@ -41,12 +41,12 @@ namespace ApiCoverageTool.Coverage
             return result;
         }
 
-        private static IList<EndpointInfo> GetAllEndpointsCalledFromMethod(MethodInfo method, Type[] clientTypes)
+        private static IList<EndpointInfo> GetAllEndpointsCalledFromMethod(MethodInfo method, Type[] controllers)
         {
             var restProcessor = new T();
             var restMethodsCalled = AssemblyProcessor.GetAllMethodCalls(method)
                 .Where(m => restProcessor.IsRestMethod(m))
-                .Where(m => clientTypes.Contains(m.DeclaringType))
+                .Where(m => controllers.Contains(m.DeclaringType))
                 .ToList();
 
             var endpoints = restMethodsCalled

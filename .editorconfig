@@ -262,24 +262,24 @@ csharp_style_var_when_type_is_apparent =true:warning
 csharp_style_var_elsewhere = true:suggestion
 
 # Prefer method-like constructs to have a block body
-csharp_style_expression_bodied_methods = when_on_single_line:error
-csharp_style_expression_bodied_constructors = when_on_single_line:error
-csharp_style_expression_bodied_operators = when_on_single_line:error
-csharp_style_expression_bodied_lambdas = when_on_single_line:error
+csharp_style_expression_bodied_methods = when_on_single_line:warning
+csharp_style_expression_bodied_constructors = when_on_single_line:warning
+csharp_style_expression_bodied_operators = when_on_single_line:warning
+csharp_style_expression_bodied_lambdas = when_on_single_line:warning
 # Prefer property-like constructs to have an expression-body
-csharp_style_expression_bodied_properties = when_on_single_line:error
-csharp_style_expression_bodied_indexers = when_on_single_line:error
-csharp_style_expression_bodied_accessors = when_on_single_line:error
+csharp_style_expression_bodied_properties = when_on_single_line:warning
+csharp_style_expression_bodied_indexers = when_on_single_line:warning
+csharp_style_expression_bodied_accessors = when_on_single_line:warning
 
 # Suggest more modern language features when available
 csharp_style_pattern_matching_over_is_with_cast_check = true:error
 csharp_style_pattern_matching_over_as_with_null_check = true:error
 csharp_style_pattern_local_over_anonymous_function = true:error
 csharp_style_inlined_variable_declaration = true:error
-csharp_style_throw_expression = true:error
+csharp_style_throw_expression = true:warning
 csharp_style_conditional_delegate_call = true:error
 csharp_style_deconstructed_variable_declaration = true:error
-csharp_style_prefer_switch_expression = true:error
+csharp_style_prefer_switch_expression = true:warning
 csharp_style_namespace_declarations = file_scoped:error
 
 # Space preferences
@@ -341,7 +341,7 @@ dotnet_diagnostic.sa1519.severity = none
 csharp_style_implicit_object_creation_when_type_is_apparent = true
 
 # IDE0090: Use 'new(...)'
-dotnet_diagnostic.ide0090.severity = error
+dotnet_diagnostic.ide0090.severity = warning
 
 # XUNIT1004: Test methods should not be skipped
 dotnet_diagnostic.xUnit1004.severity=silent
@@ -359,7 +359,7 @@ dotnet_diagnostic.ide0055.severity = error
 # Pattern matching preferences
 dotnet_diagnostic.IDE0019.severity = error # Use pattern matching to avoid 'as' followed by a 'null' check
 dotnet_diagnostic.IDE0020.severity = error # Use pattern matching to avoid 'is' check followed by a cast
-dotnet_diagnostic.IDE0066.severity = error # Use switch expression
+dotnet_diagnostic.IDE0066.severity = warning # Use switch expression
 dotnet_diagnostic.IDE0078.severity = error # Use pattern matching
 dotnet_diagnostic.IDE0083.severity = error # Use pattern matching (not operator)
 
@@ -368,15 +368,15 @@ dotnet_diagnostic.ide0060.severity = error
 
 # CONSIDER: Are IDE0051 and IDE0052 too noisy to be warnings for IDE editing scenarios? Should they be made build-only warnings?
 # IDE0051: Remove unused private member
-dotnet_diagnostic.ide0051.severity = error
+dotnet_diagnostic.ide0051.severity = warning
 
 # IDE0052: Remove unread private member
 dotnet_diagnostic.ide0052.severity = error
 
 dotnet_diagnostic.IDE0005.severity = error
 dotnet_diagnostic.IDE0021.severity = error
-dotnet_diagnostic.IDE0022.severity = error
-dotnet_diagnostic.IDE0025.severity = error
+dotnet_diagnostic.IDE0022.severity = warning
+dotnet_diagnostic.IDE0025.severity = warning
 dotnet_diagnostic.IDE0027.severity = error
 dotnet_diagnostic.IDE0031.severity = error
 dotnet_diagnostic.IDE0038.severity = error

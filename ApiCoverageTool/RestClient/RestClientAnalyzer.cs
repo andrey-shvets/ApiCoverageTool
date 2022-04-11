@@ -7,23 +7,23 @@ namespace ApiCoverageTool.RestClient
 {
     public static class RestClientAnalyzer<T> where T : IRestClientMethodsProcessor, new()
     {
-        public static IList<MappedEndpointInfo> GetRestMethodsFromClients(params Type[] clientsTypes)
+        public static IList<MappedEndpointInfo> GetRestMethodsFromClients(params Type[] controllers)
         {
             var mappedMethods = new List<MappedEndpointInfo>();
 
-            foreach (var type in clientsTypes.Distinct())
+            foreach (var type in controllers.Distinct())
                 mappedMethods.AddRange(GetRestMethodsFromClient(type));
 
             return mappedMethods;
         }
 
-        public static IList<MappedEndpointInfo> GetRestMethodsFromClient(Type clientType)
+        public static IList<MappedEndpointInfo> GetRestMethodsFromClient(Type controller)
         {
-            if (!clientType.IsInterface)
-                throw new ArgumentException($"{nameof(clientType)} parameter is expected to be an interface.", nameof(clientType));
+            if (!controller.IsInterface)
+                throw new ArgumentException($"{nameof(controller)} parameter is expected to be an interface.", nameof(controller));
 
             var methodsRetriever = new T();
-            var mappedMethods = methodsRetriever.GetAllMappedEndpoints(clientType);
+            var mappedMethods = methodsRetriever.GetAllMappedEndpoints(controller);
 
             if (!mappedMethods.Any())
                 throw new ArgumentException($"Provided interface has no methods mapped to endpoints.");

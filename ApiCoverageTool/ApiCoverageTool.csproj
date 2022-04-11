@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.6" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="RestEase" Version="1.5.5" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
