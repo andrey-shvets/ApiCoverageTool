@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using ApiCoverageTool.AssemblyUnderTests.Controllers;
 using ApiCoverageTool.Coverage.Builders;
 using ApiCoverageTool.Models;
@@ -12,6 +13,8 @@ namespace ApiCoverageTool.Tests.Coverage.Builders
 {
     public class ApiTestCoverageTests
     {
+        private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
+
         [Fact]
         public void ApiTestCoverage_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
         {
@@ -45,9 +48,9 @@ namespace ApiCoverageTool.Tests.Coverage.Builders
 
             var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
 
-            var builder = RestEaseTestCoverageBuilder.Instance()
-                .FromSwaggerJsonPath(jsonPath)
-                .ForController<ITestController>();
+            var builder = RestEaseTestCoverageBuilder.ForTestsInAssembly(AssemblyUnderTest)
+                .ForController<ITestController>()
+                .UseSwaggerJsonPath(jsonPath);
 
             var result = builder.ApiTestCoverage;
 
