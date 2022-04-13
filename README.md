@@ -1,101 +1,71 @@
 # Introduction 
-Provides test coverage for the API (right now only RestEase is supported).
+Provides data about test coverage for the API by analysing service client methods called from tests.
 
 # Features
-# A BIT DEPRECATED
 ### Test coverage
 
-To get test coverage use `GetTestCoverage` method from `ControllerMethodsTestCoverage` class.
-As parameters `GetTestCoverage` takes an Assembly with tests then need to be processed and list of interfaces that describe rest controllers (right now only RestEase is supported).
-`GetTestCoverage` returns a Dictionary where the endpoint's full path is a key, and the list of test methods is a value.
-If the endpoint method is not called in any test it won't be listed.
 ```
-var constrollers = new Type[]
+var apiCoverage = RestEaseTestCoverageBuilder
+                .ForTestsInAssembly(AssemblyWithTests)
+                .ForController<IFirstController>()
+                .ForController<ISecondController>()
+                .UseSwaggerJson(swaggerJson)
+                .ApiTestCoverage;
+```
+
+`ForTestsInAssembly` sets assembly with tests that need to be analized. E.g. `AssemblyWithTests = Assembly.GetCallingAssembly()`, if api coverage is called from the project with tests for Api.
+Right now only xUnit and MSTests are supported.
+
+`ForController<TController>()`/`ForController(Type controllerType)` sets controller/client classes that represent Api methods.
+Right now, only RestEase is supported. E.g.
+```
+[BasePath("/api/Operation")]
+public interface ITestController
 {
-    typeof(ICustomerController),
-    typeof(IQuotationController)
-};
+    [Get]
+    Task<object> GetNoPathMethod();
 
-var assembly = Assembly.GetExecutingAssembly();
-var testCoverage = ControllerMethodsTestCoverage<RestEaseMethodsProcessor>.GetTestCoverage(assembly, constrollers);
-```
+    [Get("get")]
+    Task<object> GetMethod();
 
-Insted of `ControllerMethodsTestCoverage<RestEaseMethodsProcessor>.GetTestCoverage(assembly, constrollers)` call, use `using static` directive:
-```
-using static ApiCoverageTool.Coverage.ControllerMethodsTestCoverage<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
-...
-var testCoverage = GetTestCoverage(assembly, constrollers);
+    [Get("/All/")]
+    Task<object> GetAllMethod([Query] string parameter);
+}
 ```
 
-Result example:
-```
-POST /api/account/login
-    AccountApiTests.AccountLoginReturnsTokenForAuthorizedDealer
-    AccountApiTests.AccountLoginThrowsExceptionIfPasswordIsWrong
-GET /api/common/getcurrtime
-    CommonApiTests.CommonGetCurrTimeReturnsCurrentTime
-GET /api/vehiclecommon/getmileagelist
-    VehicleApiTests.VehicleCommonGetMileageListReturnsAList
-...
-```
+There are multiple ways to provide desciption of a mapped Api:
+`UseSwaggerJson(string swaggerJson)` sets swagger json that describes Api.
+`UseSwaggerJsonPath(string swaggerJsonPath)` read swagger json from the file.
+`UseSwaggerUrl(string swaggerUrl)` get swagger json from service's swagger.
+`UseSwagger(HttpClient client)` get swagger json from service's http client.
 
-### Endpoints mapping by rest clients
-
-`ApiControllerMapping` class contains methods that can return endpoints coverage by the REST clients.
-Returns a list of endpoints that have implemented methods in specified controllers. And the list of endpoints that don't have mapped methods.
-There are three methods that differ by the source of swagger OpenAPI specification.
-`GetMappingByControllerFromUri` - from the uri to service swagger.json.
-`GetMappingByControllerFromFile` - from json file.
-`GetMappingByController` - from string.
-
-```
-var constrollers = new Type[]
-{
-    typeof(ICustomerController),
-    typeof(IQuotationController)
-};
-
-var swaggerJsonUri = new Uri("https://customer-api-***.azurewebsites.net/swagger/v1/swagger.json");
-var resEndpointsCoverage = await GetMappingByControllerFromUri(swaggerJsonUri, constrollers);
-```
-
-Result example:
-Mapped endpoints:
-```
-Mapped:
-POST /api/customer/add
-    ICustomerController.AddCustomer
-GET /api/customer/get-safe
-    ICustomerController.GetCustomerSafe
-GET /api/customer/get
-    ICustomerController.GetCustomer
-POST /api/customer/signin
-    ICustomerController.Signin
-GET /api/customer/getcustomerbyregistration
-    ICustomerController.GetCustomerByRegistration
-```
-Not mapped:
-```
-GET /api/apibase/heartbeat
-PUT /api/customer/update
-PUT /api/customer/activate
-GET /api/customer/getall
-POST /api/customer/contactus
-POST /api/customer/apptbookingcallback
-```
+`ApiTestCoverage` calculates Api coverage by tests. In the result, each endpoint will have mapped list of tests where this endpoint was called. 
+It does not guarantee that the test sis testing a specific endpoint, it just means that somewhere in the tests there is a statement where the Api method is called. 
 
 # Reporting
-Can convert data to Excel tables
+
+```
+var apiCoverage = RestEaseTestCoverageBuilder
+                .ForTestsInAssembly(AssemblyWithTests)
+                .ForController<IFirstController>()
+                .ForController<ISecondController>()
+                .UseSwaggerJson(swaggerJson)
+                .ApiTestCoverage;
+
+apiCoverage.ToXlsx("CoverageReport.xlsx", worksheetName: "SomethingApi");
+
+```
+
+`void ToXlsx(this MappedApiResult mappedApiResult, string path, string worksheetName, bool deleteFileIfExists = false)`
+`ToXlsx` is an extension method. As parameters, it takes the path to the Excel file and the name of the worksheet that would be created in the Excel table.
+By default, if the file with the table already exists, a new worksheet will be created in the existing table. If a worksheet with this name already exists, it will be overridden.
+If `deleteFileIfExists` set to `true` existing file will be deleted.
 
 # Testing
 `ApiCoverageTool.Tests` - the project with unit tests.
 `ApiCoverageTool.AssemblyUnderTests` - the assembly that is used in the unit test project. Test from this project are not expected to pass successfully.
 
-# Add as submodule
-Details can be found at https://www.atlassian.com/git/tutorials/git-submodule
+# Notes and known issues
 
-To add repository as submodule, run next script from a target folder:
-`git submodule add https://vavacars@dev.azure.com/vavacars/VavaCars/_git/ApiCoverageTool`
-
-To pull changes for all submodules, run from root folder: 
-`git submodule update --init --recursive`
+Only test methods are analyzed. Calls to Api in Init/CleanUp methods, fixtures, etc do not count.
+For now, the endpoints with the parametrized paths can have issues, like `/addresses/turkey/{cityName}/{districtName}/neighborhoods`. Controller interface need to have the exact same path parameters names to make it work properly.
