@@ -21,8 +21,7 @@ namespace ApiCoverageTool.Tests.Coverage.Builders
             var expectedNotCoveredEndpoints = new List<EndpointInfo>()
             {
                 new EndpointInfo(HttpMethod.Post, "/api/operation/all"),
-                new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"),
-                new EndpointInfo(HttpMethod.Get, "/")
+                new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate")
             };
 
             var expectedCoveredEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
@@ -42,8 +41,7 @@ namespace ApiCoverageTool.Tests.Coverage.Builders
                 (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
                 (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
                 (new EndpointInfo(HttpMethod.Post, "/api/operation/all"), new List<string>()),
-                (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>()),
-                (new EndpointInfo(HttpMethod.Get, "/"), new List<string>())
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>())
             };
 
             var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");

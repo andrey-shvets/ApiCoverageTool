@@ -48,8 +48,7 @@ namespace ApiCoverageTool.Tests
                 "POST /api/operation/all",
                 "PUT /api/operation/all",
                 "PATCH /api/operation/all",
-                "DELETE /api/operation/all",
-                "GET /"
+                "DELETE /api/operation/all"
             };
 
             var jsonPath = Path.Combine("TestData", "validSwagger.json");
