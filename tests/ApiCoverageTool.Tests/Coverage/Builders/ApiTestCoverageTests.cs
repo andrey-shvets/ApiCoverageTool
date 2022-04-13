@@ -48,7 +48,8 @@ namespace ApiCoverageTool.Tests.Coverage.Builders
 
             var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
 
-            var builder = RestEaseTestCoverageBuilder.ForTestsInAssembly(AssemblyUnderTest)
+            var builder = RestEaseTestCoverageBuilder
+                .ForTestsInAssembly(AssemblyUnderTest)
                 .ForController<ITestController>()
                 .UseSwaggerJsonPath(jsonPath);
 

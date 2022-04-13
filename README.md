@@ -2,6 +2,7 @@
 Provides test coverage for the API (right now only RestEase is supported).
 
 # Features
+# A BIT DEPRECATED
 ### Test coverage
 
 To get test coverage use `GetTestCoverage` method from `ControllerMethodsTestCoverage` class.
@@ -84,10 +85,7 @@ POST /api/customer/apptbookingcallback
 ```
 
 # Reporting
-No reporting tools are implemented yet.
-TODO:
-1. Export result to string
-2. Export result in JSON
+Can convert data to Excel tables
 
 # Testing
 `ApiCoverageTool.Tests` - the project with unit tests.

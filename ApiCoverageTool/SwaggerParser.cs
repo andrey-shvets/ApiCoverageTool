@@ -62,6 +62,9 @@ namespace ApiCoverageTool
             {
                 var methods = swaggerEndpoints.Paths[path].Keys;
 
+                if (path == "/")
+                    continue;
+
                 var fixedPath = $"/{path.Trim('/').ToLower()}";
 
                 foreach (var method in methods)

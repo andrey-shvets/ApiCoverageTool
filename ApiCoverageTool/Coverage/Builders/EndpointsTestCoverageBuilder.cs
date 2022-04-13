@@ -41,6 +41,19 @@ namespace ApiCoverageTool.Coverage.Builders
             return UseSwaggerJson(swaggerJson);
         }
 
+        public EndpointsTestCoverageBuilder<TProcessor> UseSwaggerUrl(string swaggerUrl)
+        {
+            if (swaggerUrl is null)
+                throw new ArgumentNullException(nameof(swaggerUrl), "Swagger url can not be null.");
+
+            if (!swaggerUrl.EndsWith("/swagger.json"))
+                throw new ArgumentException(nameof(swaggerUrl), $"Invalid swagger url, should be in format 'https://.../swagger.json'. Provided url: {swaggerUrl}");
+
+            var swaggerJson = new HttpClient().GetStringAsync(swaggerUrl).Result;
+
+            return UseSwaggerJson(swaggerJson);
+        }
+
         public EndpointsTestCoverageBuilder<TProcessor> UseSwaggerJson(string swaggerJson)
         {
             if (swaggerJson is null)
@@ -71,7 +84,7 @@ namespace ApiCoverageTool.Coverage.Builders
             return this;
         }
 
-        public EndpointsTestCoverageBuilder<TProcessor> ForController<T>() where T : class => ForController(typeof(T));
+        public EndpointsTestCoverageBuilder<TProcessor> ForController<TController>() where TController : class => ForController(typeof(TController));
 
         public Dictionary<EndpointInfo, List<MethodInfo>> ControllerMethodsCoverage => ControllerMethodsTestCoverage<TProcessor>.GetTestCoverage(TestAssembly, Controllers.ToArray());
         public MappedApiResult MappingByController => ApiControllerMapping<TProcessor>.GetMappingByController(Endpoints, Controllers.ToArray());
