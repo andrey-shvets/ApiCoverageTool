@@ -18,6 +18,13 @@ namespace ApiCoverageTool.Tests.Extensions.Output
     {
         private const string FileName = "testXlsx.xlsx";
         private const string SheetName = "testApi";
+        private static string LineBreak { get; } = Environment.NewLine;
+
+        public ToXlsxTests()
+        {
+            if (File.Exists(FileName))
+                File.Delete(FileName);
+        }
 
         [Fact]
         public void ToXlsx_TargetFileHasWrongExtension_ThrowsArgumentException()
@@ -41,18 +48,18 @@ namespace ApiCoverageTool.Tests.Extensions.Output
 
             result.ToXlsx(FileName, SheetName);
 
-            ValidateXlsxFile(FileName, SheetName, "Method,Endpoint,Tests count\r\n");
+            ValidateXlsxFile(FileName, SheetName, $"Method,Endpoint,Tests count{LineBreak}");
         }
 
         [Fact]
         public void ToXlsx_MappedForEndpointWithoutTests_ReturnsCsvWithZeroTestCountForEndpoint()
         {
             var result = new MappedApiResult();
-            var endpoint = new EndpointInfo(HttpMethod.Get, "endpoint/path");
+            var endpoint = new EndpointInfo(HttpMethod.Get, "/endpoint/path");
             result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
 
-            var expectedCsv = "Method,Endpoint,Tests count\r\n" +
-                              "GET,endpoint/path,0\r\n";
+            var expectedCsv = $"Method,Endpoint,Tests count{LineBreak}" +
+                              $"GET,/endpoint/path,0{LineBreak}";
 
             result.ToXlsx(FileName, SheetName);
 
@@ -65,34 +72,29 @@ namespace ApiCoverageTool.Tests.Extensions.Output
             var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
             var result = GetMappingByControllerFromFile(jsonPath, typeof(ITestController));
 
-            var expectedCsv = "Method,Endpoint,Tests count\r\n" +
-                              "GET,/api/operation,2\r\n" +
-                              "GET,/api/operation/all,1\r\n" +
-                              "DELETE,/api/operation/all,1\r\n" +
-                              "POST,/api/operation/all/duplicate,2\r\n" +
-                              "GET,/api/operation/get,1\r\n" +
-                              "POST,/api/operation/all,0\r\n" +
-                              "GET,/api/operation/all/duplicate,0\r\n";
+            var expectedCsv = $"Method,Endpoint,Tests count{LineBreak}" +
+                              $"GET,/api/operation,2{LineBreak}" +
+                              $"GET,/api/operation/all,1{LineBreak}" +
+                              $"DELETE,/api/operation/all,1{LineBreak}" +
+                              $"POST,/api/operation/all/duplicate,2{LineBreak}" +
+                              $"GET,/api/operation/get,1{LineBreak}" +
+                              $"POST,/api/operation/all,0{LineBreak}" +
+                              $"GET,/api/operation/all/duplicate,0{LineBreak}";
 
-            var directoryName = "xlsxTestDirectory";
-            Directory.CreateDirectory(directoryName);
+            result.ToXlsx(FileName, SheetName);
 
-            var filePath = Path.Combine(directoryName, FileName);
-
-            result.ToXlsx(filePath, SheetName);
-
-            ValidateXlsxFile(filePath, SheetName, expectedCsv);
+            ValidateXlsxFile(FileName, SheetName, expectedCsv);
         }
 
         [Fact]
         public void ToXlsx_CreatesNewWorksheet_IfProvidedXlsFileExists()
         {
             var result = new MappedApiResult();
-            var endpoint = new EndpointInfo(HttpMethod.Get, "endpoint/path");
+            var endpoint = new EndpointInfo(HttpMethod.Get, "/endpoint/path");
             result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
 
-            var expectedCsv = "Method,Endpoint,Tests count\r\n" +
-                              "GET,endpoint/path,0\r\n";
+            var expectedCsv = $"Method,Endpoint,Tests count{LineBreak}" +
+                              $"GET,/endpoint/path,0{LineBreak}";
 
             var directoryName = "xlsxTestDirectory";
             Directory.CreateDirectory(directoryName);
@@ -106,7 +108,7 @@ namespace ApiCoverageTool.Tests.Extensions.Output
             emptyResult.ToXlsx(filePath, emptyWorksheetName);
 
             ValidateXlsxFile(filePath, SheetName, expectedCsv);
-            ValidateXlsxFile(filePath, emptyWorksheetName, "Method,Endpoint,Tests count\r\n");
+            ValidateXlsxFile(filePath, emptyWorksheetName, $"Method,Endpoint,Tests count{LineBreak}");
         }
 
         private static void ValidateXlsxFile(string filePath, string worksheetName, string expectedCsv)
