@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using RestEase;
 
-namespace ApiCoverageTool.Tests.ObjectsUnderTests
-{
-    public class TestClientClass
-    {
-        [Get]
-        public Task<object> GetNoPathMethod() => null;
+namespace ApiCoverageTool.Tests.ObjectsUnderTests;
 
-        public Task<object> GetNoPathMethod(object obj) => Task.FromResult(obj);
-    }
+public class TestClientClass
+{
+    [Get]
+    public Task<object> GetNoPathMethod() => null;
+
+    public Task<object> GetNoPathMethod(object obj) => Task.FromResult(obj);
 }

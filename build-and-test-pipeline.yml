@@ -1,12 +1,6 @@
-name: ApiCOverageTool $(Major).$(Minor)$(Rev:.r) Test
+name: ApiCoverageTool $(Major).$(Minor)$(Rev:.r) Test
 
-trigger:
-  batch: true
-  paths:
-    include:
-      - '*'
-    exclude:
-      - '**/*.md'
+trigger: none
 
 parameters:
   - name: buildConfiguration
