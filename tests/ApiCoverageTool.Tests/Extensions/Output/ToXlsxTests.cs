@@ -4,13 +4,13 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using ApiCoverageTool.AssemblyUnderTests.Controllers;
+using ApiCoverageTool.Coverage.Builders;
 using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
 using ApiCoverageTool.Tests.Helpers;
 using ClosedXML.Excel;
 using FluentAssertions;
 using Xunit;
-using static ApiCoverageTool.Coverage.ApiControllerMapping<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
 
 namespace ApiCoverageTool.Tests.Extensions.Output;
 
@@ -30,22 +30,22 @@ public class ToXlsxTests
     [Fact]
     public void ToXlsx_TargetFileHasWrongExtension_ThrowsArgumentException()
     {
-        var result = new MappedApiResult();
+        var result = new ApiCoverageResult();
         Assert.Throws<ArgumentException>(() => result.ToXlsx("test.csv", "testApi"));
     }
 
     [Fact]
     public void ToXlsx_NullMappedApiResult_ReturnsEmptyString()
     {
-        MappedApiResult result = null;
+        ApiCoverageResult coverageResult = null;
 
-        Assert.Throws<ArgumentNullException>(() => result.ToXlsx(FileName, "testApi"));
+        Assert.Throws<ArgumentNullException>(() => coverageResult.ToXlsx(FileName, "testApi"));
     }
 
     [Fact]
     public void ToXlsx_EmptyMappedApiResult_ReturnsEmptyString()
     {
-        var result = new MappedApiResult();
+        var result = new ApiCoverageResult();
 
         result.ToXlsx(FileName, SheetName);
 
@@ -55,7 +55,7 @@ public class ToXlsxTests
     [Fact]
     public void ToXlsx_MappedForEndpointWithoutTests_ReturnsCsvWithZeroTestCountForEndpoint()
     {
-        var result = new MappedApiResult();
+        var result = new ApiCoverageResult();
         var endpoint = new EndpointInfo(HttpMethod.Get, "/endpoint/path");
         result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
 
@@ -70,17 +70,26 @@ public class ToXlsxTests
     [Fact]
     public void ToXlsx_WithRelativePath_CreatesCsvFileWithEndpointCoverageData()
     {
+        var assemblyUnderTest = typeof(AssemblyUnderTests.MockClass).Assembly;
         var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
-        var result = GetMappingByControllerFromFile(jsonPath, typeof(ITestController));
+
+        var result = RestEaseTestCoverageBuilder
+            .ForTestsInAssembly(assemblyUnderTest)
+            .ForController<ITestController>()
+            .UseSwaggerJsonPath(jsonPath)
+            .ApiCoverageTestCoverage;
 
         var expectedCsv = $"Method,Endpoint,Tests count{LineBreak}" +
-                          $"GET,/api/operation,2{LineBreak}" +
-                          $"GET,/api/operation/all,1{LineBreak}" +
-                          $"DELETE,/api/operation/all,1{LineBreak}" +
-                          $"POST,/api/operation/all/duplicate,2{LineBreak}" +
-                          $"GET,/api/operation/get,1{LineBreak}" +
+                          $"GET,/api/operation/get,5{LineBreak}" +
+                          $"PATCH,/api/operation/all,3{LineBreak}" +
+                          $"GET,/api/operation,1{LineBreak}" +
+                          $"GET,/api/operation/all,2{LineBreak}" +
+                          $"PUT,/api/operation/withparameters,1{LineBreak}" +
                           $"POST,/api/operation/all,0{LineBreak}" +
-                          $"GET,/api/operation/all/duplicate,0{LineBreak}";
+                          $"DELETE,/api/operation/all,0{LineBreak}" +
+                          $"POST,/api/operation/all/duplicate,0{LineBreak}" +
+                          $"GET,/api/operation/all/duplicate,0{LineBreak}" +
+                          $"PUT,/api/operation/withparametersnottested,0{LineBreak}";
 
         result.ToXlsx(FileName, SheetName);
 
@@ -90,7 +99,7 @@ public class ToXlsxTests
     [Fact]
     public void ToXlsx_CreatesNewWorksheet_IfProvidedXlsFileExists()
     {
-        var result = new MappedApiResult();
+        var result = new ApiCoverageResult();
         var endpoint = new EndpointInfo(HttpMethod.Get, "/endpoint/path");
         result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
 
@@ -99,7 +108,7 @@ public class ToXlsxTests
 
         result.ToXlsx(FileName, SheetName);
 
-        var emptyResult = new MappedApiResult();
+        var emptyResult = new ApiCoverageResult();
         var emptyWorksheetName = "emptyWorksheet";
         emptyResult.ToXlsx(FileName, emptyWorksheetName);
 

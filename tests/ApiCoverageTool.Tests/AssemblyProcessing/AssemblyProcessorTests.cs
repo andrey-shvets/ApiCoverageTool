@@ -32,7 +32,8 @@ public class AssemblyProcessorTests
             "MockTestNestedCall",
             "MockTestDifferentClassStaticCall",
             "MockTestDifferentClassCall",
-            "MockTestWithCycleInCallTree"
+            "MockTestWithCycleInCallTree",
+            "MockTestEndpointWithParameters"
         };
 
         var tests = AssemblyProcessor.GetAllTests(AssemblyUnderTest);

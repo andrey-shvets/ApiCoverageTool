@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
 using RestEase;
@@ -29,6 +30,9 @@ public class RestEaseMethodsProcessor : IRestClientMethodsProcessor
 
         var basePath = method.DeclaringType.GetCustomAttribute<BasePathAttribute>()?.BasePath?.Trim('/').ToLower();
         var path = method.GetCustomAttribute<RequestAttributeBase>()?.Path?.Trim('/').ToLower();
+
+        if (path is not null)
+            path = Regex.Replace(path, @"\?.*", string.Empty);
 
         if (string.IsNullOrEmpty(basePath) && string.IsNullOrEmpty(path))
             return "/";

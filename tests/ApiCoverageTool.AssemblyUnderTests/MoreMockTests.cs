@@ -52,6 +52,12 @@ namespace ApiCoverageTool.AssemblyUnderTests
             MethodWithTheCycle();
         }
 
+        [Fact]
+        public async Task MockTestEndpointWithParameters()
+        {
+            await _client.CallEndpointWithParameters();
+        }
+
         private string MethodWithRecursion(int i)
         {
             if (i > 0)

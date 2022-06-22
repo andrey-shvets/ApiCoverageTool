@@ -8,7 +8,7 @@ namespace ApiCoverageTool.Tests.Helpers;
 
 public static class ValidationHelper
 {
-    public static void ValidateMappedEndpoints(this Dictionary<EndpointInfo, List<MethodInfo>> mappedEndpoints, IEnumerable<(EndpointInfo Endpoint, List<string> Methods)> expected)
+    public static void ValidateMappedEndpoints(this Dictionary<EndpointInfo, List<MethodInfo>> mappedEndpoints, IList<(EndpointInfo Endpoint, List<string> Methods)> expected)
     {
         var actual = mappedEndpoints.Keys.Select(e => (e, ToStringList(mappedEndpoints[e]))).ToList();
 

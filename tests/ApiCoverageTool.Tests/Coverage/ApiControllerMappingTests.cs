@@ -36,7 +36,9 @@ public class ApiControllerMappingTests
             (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "GetMethod" }),
             (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
             (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
-            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" })
+            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" })
         };
 
         var expectedEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
@@ -47,7 +49,9 @@ public class ApiControllerMappingTests
             (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
             (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
             (new EndpointInfo(HttpMethod.Post, "/api/operation/all"), new List<string>()),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>())
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>()),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" })
         };
 
         var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");

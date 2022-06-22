@@ -34,7 +34,9 @@ public class RestClientAnalyzerTests
             (HttpMethod.Post, "/api/operation/all/duplicate", "PostDuplicateMethod"),
             (HttpMethod.Put, "/api/operation/all", "PutAllMethod"),
             (HttpMethod.Patch, "/api/operation/all", "PatchAllMethod"),
-            (HttpMethod.Delete, "/api/operation/all", "DeleteAllMethod")
+            (HttpMethod.Delete, "/api/operation/all", "DeleteAllMethod"),
+            (HttpMethod.Put, "/api/operation/withparameters", "CallEndpointWithParameters"),
+            (HttpMethod.Put, "/api/operation/withparametersnottested", "CallEndpointWithParametersNotTested")
         };
 
         var endpoints = GetRestMethodsFromClient(typeof(ITestController));
@@ -83,7 +85,9 @@ public class RestClientAnalyzerTests
             (HttpMethod.Delete, "/api/operation/all", "DeleteAllMethod"),
             (HttpMethod.Get, "/api/operation/get", "GetMethod"),
             (HttpMethod.Post, "/", "PostMethod"),
-            (HttpMethod.Post, "/", "PostEmptyPathMethod")
+            (HttpMethod.Post, "/", "PostEmptyPathMethod"),
+            (HttpMethod.Put, "/api/operation/withparameters", "CallEndpointWithParameters"),
+            (HttpMethod.Put, "/api/operation/withparametersnottested", "CallEndpointWithParametersNotTested")
         };
 
         var endpoints = GetRestMethodsFromClients(typeof(ITestController), typeof(ITestControllerNoBaseRout));

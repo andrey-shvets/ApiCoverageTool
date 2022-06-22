@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace ApiCoverageTool.Models;
 
-public class MappedApiResult
+public class ApiCoverageResult
 {
     public Dictionary<EndpointInfo, List<MethodInfo>> EndpointsMapping { get; init; } = new Dictionary<EndpointInfo, List<MethodInfo>>();
     public Dictionary<EndpointInfo, List<MethodInfo>> CoveredEndpoints => EndpointsMapping.Where(e => e.Value.Any()).ToDictionary(e => e.Key, e => e.Value);

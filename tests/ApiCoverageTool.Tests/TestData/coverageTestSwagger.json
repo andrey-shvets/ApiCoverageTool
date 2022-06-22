@@ -17,6 +17,12 @@
     },
     "/": {
       "get": {}
+    },
+    "api/operation/withparameters": {
+      "put": {}
+    },
+    "api/operation/withparametersnottested": {
+      "put": {}
     }
   }
 }

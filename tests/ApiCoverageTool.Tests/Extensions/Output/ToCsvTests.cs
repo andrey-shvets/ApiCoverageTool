@@ -4,30 +4,31 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using ApiCoverageTool.AssemblyUnderTests.Controllers;
+using ApiCoverageTool.Coverage.Builders;
 using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
 using FluentAssertions;
 using Xunit;
-using static ApiCoverageTool.Coverage.ApiControllerMapping<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
 
 namespace ApiCoverageTool.Tests.Extensions.Output;
 
 public class ToCsvTests
 {
     private const string FileName = "testCsv.csv";
+    private static string LineBreak { get; } = "\r\n";
 
     [Fact]
     public void ToCsv_NullMappedApiResult_ReturnsEmptyString()
     {
-        MappedApiResult result = null;
+        ApiCoverageResult coverageResult = null;
 
-        Assert.Throws<ArgumentNullException>(() => result.ToCsv(FileName));
+        Assert.Throws<ArgumentNullException>(() => coverageResult.ToCsv(FileName));
     }
 
     [Fact]
     public void ToCsv_EmptyMappedApiResult_ReturnsEmptyString()
     {
-        var result = new MappedApiResult();
+        var result = new ApiCoverageResult();
 
         result.ToCsv(FileName);
 
@@ -37,7 +38,7 @@ public class ToCsvTests
     [Fact]
     public void ToCsv_MappedForEndpointWithoutTests_ReturnsCsvWithZeroTestCountForEndpoint()
     {
-        var result = new MappedApiResult();
+        var result = new ApiCoverageResult();
         var endpoint = new EndpointInfo(HttpMethod.Get, "endpoint/path");
         result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
 
@@ -52,17 +53,26 @@ public class ToCsvTests
     [Fact]
     public void ToCsv_WithRelativePath_CreatesCsvFileWithEndpointCoverageData()
     {
+        var assemblyUnderTest = typeof(AssemblyUnderTests.MockClass).Assembly;
         var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
-        var result = GetMappingByControllerFromFile(jsonPath, typeof(ITestController));
 
-        var expectedCsv = "Method,Endpoint,TestsCount\r\n" +
-                          "GET,/api/operation,2\r\n" +
-                          "GET,/api/operation/all,1\r\n" +
-                          "DELETE,/api/operation/all,1\r\n" +
-                          "POST,/api/operation/all/duplicate,2\r\n" +
-                          "GET,/api/operation/get,1\r\n" +
-                          "POST,/api/operation/all,0\r\n" +
-                          "GET,/api/operation/all/duplicate,0\r\n";
+        var result = RestEaseTestCoverageBuilder
+            .ForTestsInAssembly(assemblyUnderTest)
+            .ForController<ITestController>()
+            .UseSwaggerJsonPath(jsonPath)
+            .ApiCoverageTestCoverage;
+
+        var expectedCsv = $"Method,Endpoint,TestsCount{LineBreak}" +
+                          $"GET,/api/operation/get,5{LineBreak}" +
+                          $"PATCH,/api/operation/all,3{LineBreak}" +
+                          $"GET,/api/operation,1{LineBreak}" +
+                          $"GET,/api/operation/all,2{LineBreak}" +
+                          $"PUT,/api/operation/withparameters,1{LineBreak}" +
+                          $"POST,/api/operation/all,0{LineBreak}" +
+                          $"DELETE,/api/operation/all,0{LineBreak}" +
+                          $"POST,/api/operation/all/duplicate,0{LineBreak}" +
+                          $"GET,/api/operation/all/duplicate,0{LineBreak}" +
+                          $"PUT,/api/operation/withparametersnottested,0{LineBreak}";
 
         var directoryName = "csvTestDirectory";
         Directory.CreateDirectory(directoryName);

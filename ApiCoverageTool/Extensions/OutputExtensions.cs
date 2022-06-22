@@ -13,12 +13,12 @@ public static class OutputExtensions
     /// <summary>
     /// Creates a table with mapping data in file.
     /// </summary>
-    /// <param name="mappedApiResult">Api mapping data.</param>
+    /// <param name="apiCoverageResult">Api mapping data.</param>
     /// <param name="path">Path to the *.csv file. Overrides existing file.</param>
-    public static void ToCsv(this MappedApiResult mappedApiResult, string path)
+    public static void ToCsv(this ApiCoverageResult apiCoverageResult, string path)
     {
-        if (mappedApiResult is null)
-            throw new ArgumentNullException($"{nameof(mappedApiResult)} can not be null", nameof(mappedApiResult));
+        if (apiCoverageResult is null)
+            throw new ArgumentNullException($"{nameof(apiCoverageResult)} can not be null", nameof(apiCoverageResult));
 
         if (path is null)
             throw new ArgumentNullException($"{nameof(path)} can not be null", nameof(path));
@@ -26,7 +26,7 @@ public static class OutputExtensions
         if (File.Exists(path))
             File.Delete(path);
 
-        var endpointsMapping = mappedApiResult.EndpointsMapping
+        var endpointsMapping = apiCoverageResult.EndpointsMapping
             .OrderByDescending(m => m.Value.Any())
             .Select(m => new { Method = m.Key.RestMethod, Endpoint = m.Key.Path, TestsCount = m.Value.Count })
             .ToList();
@@ -40,13 +40,13 @@ public static class OutputExtensions
     /// <summary>
     /// Creates Excel table with mapping data in *.xlsx file. If file already exists creates new worksheet. If worksheet with the provided name already exists, it will be overriden.
     /// </summary>
-    /// <param name="mappedApiResult">Api mapping data.</param>
+    /// <param name="apiCoverageResult">Api mapping data.</param>
     /// <param name="path">Path to the excel file. Required to have *.xlsx extension.</param>
     /// <param name="worksheetName">Name of the worksheet where will be created the table with mapping data.</param>
     /// <param name="deleteFileIfExists">If set to true existing file will be deleted and new one will be created.</param>
-    public static void ToXlsx(this MappedApiResult mappedApiResult, string path, string worksheetName, bool deleteFileIfExists = false)
+    public static void ToXlsx(this ApiCoverageResult apiCoverageResult, string path, string worksheetName, bool deleteFileIfExists = false)
     {
-        ValidateInputParameters(mappedApiResult, path, worksheetName);
+        ValidateInputParameters(apiCoverageResult, path, worksheetName);
 
         if (deleteFileIfExists && File.Exists(path))
             File.Delete(path);
@@ -59,16 +59,16 @@ public static class OutputExtensions
         var worksheet = workbook.Worksheets.Add(worksheetName);
 
         worksheet.AddHeaders();
-        worksheet.FillCoverageData(mappedApiResult);
+        worksheet.FillCoverageData(apiCoverageResult);
         worksheet.FillCoverageMetrics();
 
         workbook.SaveAs(path);
     }
 
-    private static void ValidateInputParameters(MappedApiResult mappedApiResult, string path, string worksheetName)
+    private static void ValidateInputParameters(ApiCoverageResult apiCoverageResult, string path, string worksheetName)
     {
-        if (mappedApiResult is null)
-            throw new ArgumentNullException($"{nameof(mappedApiResult)} can not be null", nameof(mappedApiResult));
+        if (apiCoverageResult is null)
+            throw new ArgumentNullException($"{nameof(apiCoverageResult)} can not be null", nameof(apiCoverageResult));
 
         if (path is null)
             throw new ArgumentNullException($"{nameof(path)} can not be null", nameof(path));
@@ -90,9 +90,9 @@ public static class OutputExtensions
         rngHeaders.Style.Fill.BackgroundColor = XLColor.SkyBlue;
     }
 
-    private static void FillCoverageData(this IXLWorksheet worksheet, MappedApiResult mappedApiResult)
+    private static void FillCoverageData(this IXLWorksheet worksheet, ApiCoverageResult apiCoverageResult)
     {
-        var endpointsMapping = mappedApiResult.EndpointsMapping
+        var endpointsMapping = apiCoverageResult.EndpointsMapping
             .OrderByDescending(m => m.Value.Any())
             .Select(m => new { Method = m.Key.RestMethod, Endpoint = m.Key.Path, TestsCount = m.Value.Count })
             .ToList();

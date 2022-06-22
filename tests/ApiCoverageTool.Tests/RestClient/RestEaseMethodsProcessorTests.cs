@@ -95,6 +95,7 @@ public class RestEaseMethodsProcessorTests
     [InlineData("GetMethod", "/api/operation/get")]
     [InlineData("PostMethod", "/api/operation/all/duplicate")]
     [InlineData("PostDuplicateMethod", "/api/operation/all/duplicate")]
+    [InlineData("CallEndpointWithParameters", "/api/operation/withparameters")]
     public void GetFullPath_ForRestMethod_ReturnsFullEndpointPath(string methodName, string expectedPath)
     {
         var type = typeof(ITestController);

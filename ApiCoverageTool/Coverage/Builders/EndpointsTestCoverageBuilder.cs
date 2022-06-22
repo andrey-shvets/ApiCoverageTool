@@ -87,9 +87,9 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
     public EndpointsTestCoverageBuilder<TProcessor> ForController<TController>() where TController : class => ForController(typeof(TController));
 
     public Dictionary<EndpointInfo, List<MethodInfo>> ControllerMethodsCoverage => ControllerMethodsTestCoverage<TProcessor>.GetTestCoverage(TestAssembly, Controllers.ToArray());
-    public MappedApiResult MappingByController => ApiControllerMapping<TProcessor>.GetMappingByController(Endpoints, Controllers.ToArray());
+    public ApiCoverageResult MappingByController => ApiControllerMapping<TProcessor>.GetMappingByController(Endpoints, Controllers.ToArray());
 
-    public MappedApiResult ApiTestCoverage
+    public ApiCoverageResult ApiCoverageByControllerCoverage
     {
         get
         {
@@ -97,6 +97,28 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
                 throw new InvalidOperationException("Looks like swagger source was not specified. Use UseSwagger, UseSwaggerJson or UseSwaggerJsonPath methods.");
 
             var apiCoverage = MappingByController;
+            var mappedEndpoints = apiCoverage.EndpointsMapping.Keys;
+
+            foreach (var endpoint in Endpoints)
+                if (!mappedEndpoints.Contains(endpoint))
+                    apiCoverage.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
+
+            return apiCoverage;
+        }
+    }
+
+    public ApiCoverageResult ApiCoverageTestCoverage
+    {
+        get
+        {
+            if (Endpoints is null)
+                throw new InvalidOperationException("Looks like swagger source was not specified. Use UseSwagger, UseSwaggerJson or UseSwaggerJsonPath methods.");
+
+            var apiCoverage = new ApiCoverageResult
+            {
+                EndpointsMapping = ControllerMethodsCoverage
+            };
+
             var mappedEndpoints = apiCoverage.EndpointsMapping.Keys;
 
             foreach (var endpoint in Endpoints)

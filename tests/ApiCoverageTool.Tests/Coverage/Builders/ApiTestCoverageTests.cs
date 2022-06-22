@@ -16,7 +16,7 @@ public class ApiTestCoverageTests
     private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
 
     [Fact]
-    public void ApiTestCoverage_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
+    public void ApiByControllerCoverage_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
     {
         var expectedNotCoveredEndpoints = new List<EndpointInfo>()
         {
@@ -30,7 +30,9 @@ public class ApiTestCoverageTests
             (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "GetMethod" }),
             (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
             (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
-            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" })
+            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" })
         };
 
         var expectedEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
@@ -40,6 +42,8 @@ public class ApiTestCoverageTests
             (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
             (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
             (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" }),
             (new EndpointInfo(HttpMethod.Post, "/api/operation/all"), new List<string>()),
             (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>())
         };
@@ -51,7 +55,56 @@ public class ApiTestCoverageTests
             .ForController<ITestController>()
             .UseSwaggerJsonPath(jsonPath);
 
-        var result = builder.ApiTestCoverage;
+        var result = builder.ApiCoverageByControllerCoverage;
+
+        result.EndpointsMapping.ValidateMappedEndpoints(expectedEndpoints);
+        result.NotCoveredEndpoints.Should().BeEquivalentTo(expectedNotCoveredEndpoints);
+        result.CoveredEndpoints.ValidateMappedEndpoints(expectedCoveredEndpoints);
+    }
+
+    [Fact]
+    public void ApiTestCoverage_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
+    {
+        var expectedNotCoveredEndpoints = new List<EndpointInfo>()
+        {
+            new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"),
+            new EndpointInfo(HttpMethod.Delete, "/api/operation/all"),
+            new EndpointInfo(HttpMethod.Post, "/api/operation/all"),
+            new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"),
+            new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested")
+        };
+
+        var expectedCoveredEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
+        {
+            (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "MockTestNestedCallAsync" }),
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "MockFactAsync", "MockTheory", "MockTestNestedCallAsync", "MockTestNestedCall", "MockTestWithCycleInCallTree" }),
+            (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "MockLambdaExpression", "MockLambdaExpressionAsync", "MockTestNestedCall" }),
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "MockTestDifferentClassStaticCall", "MockTestDifferentClassCall" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "MockTestEndpointWithParameters" })
+        };
+
+        var expectedEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
+        {
+            (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "MockTestNestedCallAsync" }),
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "MockFactAsync", "MockTheory", "MockTestNestedCallAsync", "MockTestNestedCall", "MockTestWithCycleInCallTree" }),
+            (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "MockLambdaExpression", "MockLambdaExpressionAsync", "MockTestNestedCall" }),
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "MockTestDifferentClassStaticCall", "MockTestDifferentClassCall" }),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "MockTestEndpointWithParameters" }),
+            (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string>()),
+            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string>()),
+            (new EndpointInfo(HttpMethod.Post, "/api/operation/all"), new List<string>()),
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>()),
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string>())
+        };
+
+        var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
+
+        var builder = RestEaseTestCoverageBuilder
+            .ForTestsInAssembly(AssemblyUnderTest)
+            .ForController<ITestController>()
+            .UseSwaggerJsonPath(jsonPath);
+
+        var result = builder.ApiCoverageTestCoverage;
 
         result.EndpointsMapping.ValidateMappedEndpoints(expectedEndpoints);
         result.NotCoveredEndpoints.Should().BeEquivalentTo(expectedNotCoveredEndpoints);

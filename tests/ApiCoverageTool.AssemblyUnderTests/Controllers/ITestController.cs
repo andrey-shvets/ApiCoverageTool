@@ -33,6 +33,12 @@ namespace ApiCoverageTool.AssemblyUnderTests.Controllers
         [Delete("all")]
         Task<object> DeleteAllMethod([Query] string parameter);
 
+        [Put("withParameters?api-version=1.0")]
+        Task CallEndpointWithParameters();
+
+        [Put("withParametersNotTested?api-version=1.0")]
+        Task CallEndpointWithParametersNotTested();
+
         Task<object> NonRestMethod();
     }
 }
