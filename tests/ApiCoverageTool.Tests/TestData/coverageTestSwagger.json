@@ -6,7 +6,8 @@
     "/api/operation/all": {
       "post": {},
       "get": {},
-      "delete": {}
+      "delete": {},
+      "patch": {}
     },
     "/api/operation/all/duplicate": {
       "post": {},
@@ -23,6 +24,9 @@
     },
     "api/operation/withparametersnottested": {
       "put": {}
+    },
+    "api/operation/with/{path}/parameter": {
+      "get": {}
     }
   }
 }

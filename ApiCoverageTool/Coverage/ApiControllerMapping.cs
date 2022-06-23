@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ApiCoverageTool.Extensions;
 using ApiCoverageTool.Models;
@@ -50,11 +51,19 @@ public static class ApiControllerMapping<T> where T : IRestClientMethodsProcesso
 
         foreach (var endpoint in serviceEndpoints)
         {
-            var mappedMethods = mappedEndpoints.Where(m => m.RestMethod == endpoint.RestMethod && string.Equals(m.Path, endpoint.Path, StringComparison.InvariantCultureIgnoreCase)).Select(m => m.MappedMethod).ToList();
+            var mappedMethods = mappedEndpoints.Where(m => m.RestMethod == endpoint.RestMethod && IsSameEndpointPath(m.Path, endpoint.Path)).Select(m => m.MappedMethod).ToList();
 
             result.EndpointsMapping[endpoint] = mappedMethods;
         }
 
         return result;
+    }
+
+    private static bool IsSameEndpointPath(string path1, string path2)
+    {
+        var trimmedPath1 = Regex.Replace(path1.Trim('/'), @"\{.+?\}", "{}");
+        var trimmedPath2 = Regex.Replace(path2.Trim('/'), @"\{.+?\}", "{}");
+
+        return string.Equals(trimmedPath1, trimmedPath2, StringComparison.InvariantCultureIgnoreCase);
     }
 }

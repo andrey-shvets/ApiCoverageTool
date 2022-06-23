@@ -36,7 +36,8 @@ public class RestClientAnalyzerTests
             (HttpMethod.Patch, "/api/operation/all", "PatchAllMethod"),
             (HttpMethod.Delete, "/api/operation/all", "DeleteAllMethod"),
             (HttpMethod.Put, "/api/operation/withparameters", "CallEndpointWithParameters"),
-            (HttpMethod.Put, "/api/operation/withparametersnottested", "CallEndpointWithParametersNotTested")
+            (HttpMethod.Put, "/api/operation/withparametersnottested", "CallEndpointWithParametersNotTested"),
+            (HttpMethod.Get, "/api/operation/with/{somepath}/parameter", "CallEndpointWithPathParameter")
         };
 
         var endpoints = GetRestMethodsFromClient(typeof(ITestController));
@@ -87,7 +88,8 @@ public class RestClientAnalyzerTests
             (HttpMethod.Post, "/", "PostMethod"),
             (HttpMethod.Post, "/", "PostEmptyPathMethod"),
             (HttpMethod.Put, "/api/operation/withparameters", "CallEndpointWithParameters"),
-            (HttpMethod.Put, "/api/operation/withparametersnottested", "CallEndpointWithParametersNotTested")
+            (HttpMethod.Put, "/api/operation/withparametersnottested", "CallEndpointWithParametersNotTested"),
+            (HttpMethod.Get, "/api/operation/with/{somepath}/parameter", "CallEndpointWithPathParameter")
         };
 
         var endpoints = GetRestMethodsFromClients(typeof(ITestController), typeof(ITestControllerNoBaseRout));

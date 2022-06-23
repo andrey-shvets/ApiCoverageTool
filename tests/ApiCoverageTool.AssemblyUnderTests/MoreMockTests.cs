@@ -58,6 +58,12 @@ namespace ApiCoverageTool.AssemblyUnderTests
             await _client.CallEndpointWithParameters();
         }
 
+        [Fact]
+        public async Task MockTestCallEndpointWithPathParameter()
+        {
+            _ = await _client.CallEndpointWithPathParameter("test");
+        }
+
         private string MethodWithRecursion(int i)
         {
             if (i > 0)

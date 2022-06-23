@@ -29,7 +29,8 @@ public class ControllerMethodsTestCoverageTests
             (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "MockTestNestedCallAsync" }),
             (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "MockTestNestedCall", "MockLambdaExpression", "MockLambdaExpressionAsync" }),
             (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "MockTestDifferentClassStaticCall", "MockTestDifferentClassCall" }),
-            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "MockTestEndpointWithParameters" })
+            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "MockTestEndpointWithParameters" }),
+            (new EndpointInfo(HttpMethod.Get, "/api/operation/with/{somepath}/parameter"), new List<string> { "MockTestCallEndpointWithPathParameter" })
         };
 
         var result = GetTestCoverage(AssemblyUnderTest, typeof(ITestController));

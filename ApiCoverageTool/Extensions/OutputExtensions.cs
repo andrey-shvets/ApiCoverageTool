@@ -28,6 +28,7 @@ public static class OutputExtensions
 
         var endpointsMapping = apiCoverageResult.EndpointsMapping
             .OrderByDescending(m => m.Value.Any())
+            .ThenBy(m => m.Key.Path)
             .Select(m => new { Method = m.Key.RestMethod, Endpoint = m.Key.Path, TestsCount = m.Value.Count })
             .ToList();
 
@@ -94,6 +95,7 @@ public static class OutputExtensions
     {
         var endpointsMapping = apiCoverageResult.EndpointsMapping
             .OrderByDescending(m => m.Value.Any())
+            .ThenBy(m => m.Key.Path)
             .Select(m => new { Method = m.Key.RestMethod, Endpoint = m.Key.Path, TestsCount = m.Value.Count })
             .ToList();
 

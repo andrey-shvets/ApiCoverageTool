@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using ApiCoverageTool.Models;
 using ApiCoverageTool.RestClient;
 
@@ -89,7 +90,7 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
     public Dictionary<EndpointInfo, List<MethodInfo>> ControllerMethodsCoverage => ControllerMethodsTestCoverage<TProcessor>.GetTestCoverage(TestAssembly, Controllers.ToArray());
     public ApiCoverageResult MappingByController => ApiControllerMapping<TProcessor>.GetMappingByController(Endpoints, Controllers.ToArray());
 
-    public ApiCoverageResult ApiCoverageByControllerCoverage
+    public ApiCoverageResult ApiCoverageByController
     {
         get
         {
@@ -107,25 +108,34 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
         }
     }
 
-    public ApiCoverageResult ApiCoverageTestCoverage
+    public ApiCoverageResult ApiTestCoverage
     {
         get
         {
             if (Endpoints is null)
                 throw new InvalidOperationException("Looks like swagger source was not specified. Use UseSwagger, UseSwaggerJson or UseSwaggerJsonPath methods.");
 
-            var apiCoverage = new ApiCoverageResult
-            {
-                EndpointsMapping = ControllerMethodsCoverage
-            };
-
-            var mappedEndpoints = apiCoverage.EndpointsMapping.Keys;
+            var apiCoverage = new ApiCoverageResult();
+            var controllerMethodsCoverage = ControllerMethodsCoverage;
 
             foreach (var endpoint in Endpoints)
-                if (!mappedEndpoints.Contains(endpoint))
-                    apiCoverage.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
+            {
+                var mappedController = controllerMethodsCoverage.Keys.FirstOrDefault(e =>
+                    e.RestMethod == endpoint.RestMethod && IsSameEndpointPath(e.Path, endpoint.Path));
+                var testsForEndpoint = mappedController is not null ? controllerMethodsCoverage[mappedController] : new List<MethodInfo>();
+
+                apiCoverage.EndpointsMapping.Add(endpoint, testsForEndpoint);
+            }
 
             return apiCoverage;
         }
+    }
+
+    private static bool IsSameEndpointPath(string path1, string path2)
+    {
+        var trimmedPath1 = Regex.Replace(path1.Trim('/'), @"\{.+?\}", "{}");
+        var trimmedPath2 = Regex.Replace(path2.Trim('/'), @"\{.+?\}", "{}");
+
+        return string.Equals(trimmedPath1, trimmedPath2, StringComparison.InvariantCultureIgnoreCase);
     }
 }

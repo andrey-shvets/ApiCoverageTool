@@ -77,13 +77,14 @@ public class ToXlsxTests
             .ForTestsInAssembly(assemblyUnderTest)
             .ForController<ITestController>()
             .UseSwaggerJsonPath(jsonPath)
-            .ApiCoverageTestCoverage;
+            .ApiTestCoverage;
 
         var expectedCsv = $"Method,Endpoint,Tests count{LineBreak}" +
-                          $"GET,/api/operation/get,5{LineBreak}" +
-                          $"PATCH,/api/operation/all,3{LineBreak}" +
                           $"GET,/api/operation,1{LineBreak}" +
                           $"GET,/api/operation/all,2{LineBreak}" +
+                          $"PATCH,/api/operation/all,3{LineBreak}" +
+                          $"GET,/api/operation/get,5{LineBreak}" +
+                          $"GET,/api/operation/with/{{path}}/parameter,1{LineBreak}" +
                           $"PUT,/api/operation/withparameters,1{LineBreak}" +
                           $"POST,/api/operation/all,0{LineBreak}" +
                           $"DELETE,/api/operation/all,0{LineBreak}" +
