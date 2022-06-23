@@ -6,173 +6,174 @@ using ApiCoverageTool.Tests.ObjectsUnderTests;
 using Xunit;
 using static ApiCoverageTool.Tests.AssemblyProcessing.AssemblyProcessorTestsHelper;
 
-namespace ApiCoverageTool.Tests.AssemblyProcessing;
-
-public class AssemblyProcessorTests
+namespace ApiCoverageTool.Tests.AssemblyProcessing
 {
-    private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
-
-    #region GetAllTests
-
-    [Fact]
-    public void GetAllTests_WithNull_ThrowsArgumentNullException() => Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllTests(null));
-
-    [Fact]
-    public void GetAllTests_GivenAssemblyWithXUnitTests_ReturnsListOfTestMethods()
+    public class AssemblyProcessorTests
     {
-        var expected = new List<string>
+        private static Assembly AssemblyUnderTest => typeof(AssemblyUnderTests.MockClass).Assembly;
+
+        #region GetAllTests
+
+        [Fact]
+        public void GetAllTests_WithNull_ThrowsArgumentNullException() => Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllTests(null));
+
+        [Fact]
+        public void GetAllTests_GivenAssemblyWithXUnitTests_ReturnsListOfTestMethods()
         {
-            "MockFactAsync",
-            "MockTheory",
-            "NoClientCallTheoryAsync",
-            "NoClientCallFact",
-            "MockLambdaExpression",
-            "MockLambdaExpressionAsync",
-            "MockTestNestedCallAsync",
-            "MockTestNestedCall",
-            "MockTestDifferentClassStaticCall",
-            "MockTestDifferentClassCall",
-            "MockTestWithCycleInCallTree",
-            "MockTestEndpointWithParameters",
-            "MockTestCallEndpointWithPathParameter"
-        };
+            var expected = new List<string>
+            {
+                "MockFactAsync",
+                "MockTheory",
+                "NoClientCallTheoryAsync",
+                "NoClientCallFact",
+                "MockLambdaExpression",
+                "MockLambdaExpressionAsync",
+                "MockTestNestedCallAsync",
+                "MockTestNestedCall",
+                "MockTestDifferentClassStaticCall",
+                "MockTestDifferentClassCall",
+                "MockTestWithCycleInCallTree",
+                "MockTestEndpointWithParameters",
+                "MockTestCallEndpointWithPathParameter"
+            };
 
-        var tests = AssemblyProcessor.GetAllTests(AssemblyUnderTest);
+            var tests = AssemblyProcessor.GetAllTests(AssemblyUnderTest);
 
-        VerifyMethodsNames(tests, expected);
-    }
+            VerifyMethodsNames(tests, expected);
+        }
 
-    #endregion GetAllTests
+        #endregion GetAllTests
 
-    #region GetMethodCallsFromMethodBody
+        #region GetMethodCallsFromMethodBody
 
-    [Fact]
-    public void GetMethodCallsFromMethodBody_WithNull_ThrowsArgumentNullException()
-    {
-        MethodInfo method = null;
-        Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetMethodCallsFromMethodBody(method));
-    }
-
-    [Fact]
-    public void GetMethodCallsFromMethodBody_GivenNonAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
-    {
-        var type = typeof(AssemblyUnderTests.MockTests);
-        var method = type.GetMethod("MockTheory");
-
-        var methodsCalls = AssemblyProcessor.GetMethodCallsFromMethodBody(method);
-
-        var expected = new List<string>
+        [Fact]
+        public void GetMethodCallsFromMethodBody_WithNull_ThrowsArgumentNullException()
         {
-            "GetMethod",
-            "NotTestMethodNoClientCall"
-        };
+            MethodInfo method = null;
+            Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetMethodCallsFromMethodBody(method));
+        }
 
-        VerifyMethodsNames(methodsCalls, expected);
-    }
-
-    [Fact]
-    public void GetMethodCallsFromMethodBody_GivenAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
-    {
-        var type = typeof(AssemblyUnderTests.MockTests);
-        var method = type.GetMethod("MockFactAsync");
-
-        var methodsCalls = AssemblyProcessor.GetMethodCallsFromMethodBody(method, new[] { "ApiCoverageTool.AssemblyUnderTests" });
-
-        var expected = new List<string>
+        [Fact]
+        public void GetMethodCallsFromMethodBody_GivenNonAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
         {
-            "NotTestMethodAsync",
-            "GetMethod",
-            "NotTestMethodNoClientCall"
-        };
+            var type = typeof(AssemblyUnderTests.MockTests);
+            var method = type.GetMethod("MockTheory");
 
-        VerifyMethodsNames(methodsCalls, expected);
-    }
+            var methodsCalls = AssemblyProcessor.GetMethodCallsFromMethodBody(method);
 
-    #endregion GetMethodCallsFromMethodBody
+            var expected = new List<string>
+            {
+                "GetMethod",
+                "NotTestMethodNoClientCall"
+            };
 
-    #region GetAllMethodCalls
+            VerifyMethodsNames(methodsCalls, expected);
+        }
 
-    [Fact]
-    public void GetAllMethodCalls_WithNull_ThrowsArgumentNullException()
-    {
-        MethodInfo method = null;
-        Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllMethodCalls(method));
-    }
-
-    [Fact]
-    public void GetAllMethodCalls_GivenNonAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
-    {
-        var type = typeof(AssemblyUnderTests.MoreMockTests);
-        var method = type.GetMethod("MockTestNestedCall");
-
-        var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
-
-        var expected = new List<string>
+        [Fact]
+        public void GetMethodCallsFromMethodBody_GivenAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
         {
-            "NotTestMethod",
-            "NotTestMethodNoClientCall",
-            "PatchAllMethod",
-            "GetMethod"
-        };
+            var type = typeof(AssemblyUnderTests.MockTests);
+            var method = type.GetMethod("MockFactAsync");
 
-        VerifyMethodsNames(methodsCalls, expected);
-    }
+            var methodsCalls = AssemblyProcessor.GetMethodCallsFromMethodBody(method, new[] { "ApiCoverageTool.AssemblyUnderTests" });
 
-    [Fact]
-    public void GetAllMethodCalls_WithListOfAllowedAssemblies_ReturnsListOfCallsFromProvidedMethodInTheseAssemblies()
-    {
-        var type = typeof(TestClass);
-        var method = type.GetMethod("AbstractMethod");
+            var expected = new List<string>
+            {
+                "NotTestMethodAsync",
+                "GetMethod",
+                "NotTestMethodNoClientCall"
+            };
 
-        var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method, new[] { typeof(AssemblyUnderTests.MockClass).Assembly.GetName().Name });
+            VerifyMethodsNames(methodsCalls, expected);
+        }
 
-        var expected = new List<string>
+        #endregion GetMethodCallsFromMethodBody
+
+        #region GetAllMethodCalls
+
+        [Fact]
+        public void GetAllMethodCalls_WithNull_ThrowsArgumentNullException()
         {
-            "NotTestMethodNoClientCall"
-        };
+            MethodInfo method = null;
+            Assert.Throws<ArgumentNullException>(() => AssemblyProcessor.GetAllMethodCalls(method));
+        }
 
-        VerifyMethodsNames(methodsCalls, expected);
-    }
-
-    [Fact]
-    public void GetAllMethodCalls_GivenAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
-    {
-        var type = typeof(AssemblyUnderTests.MoreMockTests);
-        var method = type.GetMethod("MockTestNestedCallAsync");
-
-        var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
-
-        var expected = new List<string>
+        [Fact]
+        public void GetAllMethodCalls_GivenNonAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
         {
-            "GetNoPathMethod",
-            "NonRestMethod",
-            "NotTestMethodAsync",
-            "GetMethod"
-        };
+            var type = typeof(AssemblyUnderTests.MoreMockTests);
+            var method = type.GetMethod("MockTestNestedCall");
 
-        VerifyMethodsNames(methodsCalls, expected);
-    }
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
 
-    [Fact]
-    public void GetAllMethodCalls_GiveMethodThatHasCycleInCAllTree_ReturnsListOfCallsFromProvidedMethod()
-    {
-        var type = typeof(AssemblyUnderTests.MoreMockTests);
-        var method = type.GetMethod("MockTestWithCycleInCallTree");
+            var expected = new List<string>
+            {
+                "NotTestMethod",
+                "NotTestMethodNoClientCall",
+                "PatchAllMethod",
+                "GetMethod"
+            };
 
-        var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
+            VerifyMethodsNames(methodsCalls, expected);
+        }
 
-        var expected = new List<string>
+        [Fact]
+        public void GetAllMethodCalls_WithListOfAllowedAssemblies_ReturnsListOfCallsFromProvidedMethodInTheseAssemblies()
         {
-            "MethodWithRecursion",
-            "MethodWithTheCycle",
-            "NotTestMethod",
-            "MethodWithTheCycle2",
-            "GetMethod",
-            "MethodWithTheCycle3"
-        };
+            var type = typeof(TestClass);
+            var method = type.GetMethod("AbstractMethod");
 
-        VerifyMethodsNames(methodsCalls, expected);
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method, new[] { typeof(AssemblyUnderTests.MockClass).Assembly.GetName().Name });
+
+            var expected = new List<string>
+            {
+                "NotTestMethodNoClientCall"
+            };
+
+            VerifyMethodsNames(methodsCalls, expected);
+        }
+
+        [Fact]
+        public void GetAllMethodCalls_GivenAsyncMethod_ReturnsListOfCallsFromProvidedMethod()
+        {
+            var type = typeof(AssemblyUnderTests.MoreMockTests);
+            var method = type.GetMethod("MockTestNestedCallAsync");
+
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
+
+            var expected = new List<string>
+            {
+                "GetNoPathMethod",
+                "NonRestMethod",
+                "NotTestMethodAsync",
+                "GetMethod"
+            };
+
+            VerifyMethodsNames(methodsCalls, expected);
+        }
+
+        [Fact]
+        public void GetAllMethodCalls_GiveMethodThatHasCycleInCAllTree_ReturnsListOfCallsFromProvidedMethod()
+        {
+            var type = typeof(AssemblyUnderTests.MoreMockTests);
+            var method = type.GetMethod("MockTestWithCycleInCallTree");
+
+            var methodsCalls = AssemblyProcessor.GetAllMethodCalls(method);
+
+            var expected = new List<string>
+            {
+                "MethodWithRecursion",
+                "MethodWithTheCycle",
+                "NotTestMethod",
+                "MethodWithTheCycle2",
+                "GetMethod",
+                "MethodWithTheCycle3"
+            };
+
+            VerifyMethodsNames(methodsCalls, expected);
+        }
+
+        #endregion GetAllMethodCalls
     }
-
-    #endregion GetAllMethodCalls
 }

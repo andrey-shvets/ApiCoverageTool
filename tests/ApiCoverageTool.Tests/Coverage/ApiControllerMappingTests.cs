@@ -9,60 +9,61 @@ using FluentAssertions;
 using Xunit;
 using static ApiCoverageTool.Coverage.ApiControllerMapping<ApiCoverageTool.RestClient.RestEaseMethodsProcessor>;
 
-namespace ApiCoverageTool.Tests.Coverage;
-
-public class ApiControllerMappingTests
+namespace ApiCoverageTool.Tests.Coverage
 {
-    [Fact]
-    public void GetMappingByController_WithNullServiceEndpoints_ThrowsArgumentException() =>
-        Assert.Throws<ArgumentNullException>(() => GetMappingByController((IList<EndpointInfo>)null, Array.Empty<Type>()));
-
-    [Fact]
-    public void GetMappingByController_WithNullMappedEndpoints_ThrowsArgumentException() =>
-        Assert.Throws<ArgumentNullException>(() => GetMappingByController(new List<EndpointInfo>(), null));
-
-    [Fact]
-    public void GetMappingByControllerFromFile_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
+    public class ApiControllerMappingTests
     {
-        var expectedNotCoveredEndpoints = new List<EndpointInfo>()
+        [Fact]
+        public void GetMappingByController_WithNullServiceEndpoints_ThrowsArgumentException() =>
+            Assert.Throws<ArgumentNullException>(() => GetMappingByController((IList<EndpointInfo>)null, Array.Empty<Type>()));
+
+        [Fact]
+        public void GetMappingByController_WithNullMappedEndpoints_ThrowsArgumentException() =>
+            Assert.Throws<ArgumentNullException>(() => GetMappingByController(new List<EndpointInfo>(), null));
+
+        [Fact]
+        public void GetMappingByControllerFromFile_WithSwaggerJson_ReturnsListOfOperationsAndEndpoints()
         {
-            new EndpointInfo(HttpMethod.Post, "/api/operation/all"),
-            new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate")
-        };
+            var expectedNotCoveredEndpoints = new List<EndpointInfo>()
+            {
+                new EndpointInfo(HttpMethod.Post, "/api/operation/all"),
+                new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate")
+            };
 
-        var expectedCoveredEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
-        {
-            (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "GetNoPathMethod", "GetEmptyPathMethod" }),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
-            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
-            (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "PatchAllMethod" }),
-            (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "GetMethod" }),
-            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
-            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" }),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/with/{path}/parameter"), new List<string> { "CallEndpointWithPathParameter" })
-        };
+            var expectedCoveredEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
+            {
+                (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "GetNoPathMethod", "GetEmptyPathMethod" }),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
+                (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
+                (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "PatchAllMethod" }),
+                (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "GetMethod" }),
+                (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
+                (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" }),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/with/{path}/parameter"), new List<string> { "CallEndpointWithPathParameter" })
+            };
 
-        var expectedEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
-        {
-            (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "GetNoPathMethod", "GetEmptyPathMethod" }),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
-            (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
-            (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "PatchAllMethod" }),
-            (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "GetMethod" }),
-            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
-            (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" }),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/with/{path}/parameter"), new List<string> { "CallEndpointWithPathParameter" }),
-            (new EndpointInfo(HttpMethod.Post, "/api/operation/all"), new List<string>()),
-            (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>())
-        };
+            var expectedEndpoints = new List<(EndpointInfo Endpoint, List<string> Methods)>
+            {
+                (new EndpointInfo(HttpMethod.Get, "/api/operation"), new List<string> { "GetNoPathMethod", "GetEmptyPathMethod" }),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/all"), new List<string> { "GetAllMethod" }),
+                (new EndpointInfo(HttpMethod.Delete, "/api/operation/all"), new List<string> { "DeleteAllMethod" }),
+                (new EndpointInfo(HttpMethod.Patch, "/api/operation/all"), new List<string> { "PatchAllMethod" }),
+                (new EndpointInfo(HttpMethod.Post, "/api/operation/all/duplicate"), new List<string> { "PostMethod", "PostDuplicateMethod" }),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/get"), new List<string> { "GetMethod" }),
+                (new EndpointInfo(HttpMethod.Put, "/api/operation/withparameters"), new List<string> { "CallEndpointWithParameters" }),
+                (new EndpointInfo(HttpMethod.Put, "/api/operation/withparametersnottested"), new List<string> { "CallEndpointWithParametersNotTested" }),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/with/{path}/parameter"), new List<string> { "CallEndpointWithPathParameter" }),
+                (new EndpointInfo(HttpMethod.Post, "/api/operation/all"), new List<string>()),
+                (new EndpointInfo(HttpMethod.Get, "/api/operation/all/duplicate"), new List<string>())
+            };
 
-        var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
-        var result = GetMappingByControllerFromFile(jsonPath, typeof(ITestController));
+            var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
+            var result = GetMappingByControllerFromFile(jsonPath, typeof(ITestController));
 
-        result.NotCoveredEndpoints.Should().BeEquivalentTo(expectedNotCoveredEndpoints);
-        result.CoveredEndpoints.ValidateMappedEndpoints(expectedCoveredEndpoints);
-        result.EndpointsMapping.ValidateMappedEndpoints(expectedEndpoints);
+            result.NotCoveredEndpoints.Should().BeEquivalentTo(expectedNotCoveredEndpoints);
+            result.CoveredEndpoints.ValidateMappedEndpoints(expectedCoveredEndpoints);
+            result.EndpointsMapping.ValidateMappedEndpoints(expectedEndpoints);
+        }
     }
 }

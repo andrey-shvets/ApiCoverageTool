@@ -1,8 +1,9 @@
-﻿namespace ApiCoverageTool.Tests.ObjectsUnderTests;
-
-public abstract class TestClassBase
+﻿namespace ApiCoverageTool.Tests.ObjectsUnderTests
 {
-    public abstract string AbstractMethod();
+    public abstract class TestClassBase
+    {
+        public abstract string AbstractMethod();
 
-    public virtual object PolymorphismMethod(object obj) => obj;
+        public virtual object PolymorphismMethod(object obj) => obj;
+    }
 }

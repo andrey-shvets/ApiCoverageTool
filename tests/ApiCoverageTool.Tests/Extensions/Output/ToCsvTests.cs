@@ -10,88 +10,89 @@ using ApiCoverageTool.Models;
 using FluentAssertions;
 using Xunit;
 
-namespace ApiCoverageTool.Tests.Extensions.Output;
-
-public class ToCsvTests
+namespace ApiCoverageTool.Tests.Extensions.Output
 {
-    private const string FileName = "testCsv.csv";
-    private static string LineBreak { get; } = "\r\n";
-
-    [Fact]
-    public void ToCsv_NullMappedApiResult_ReturnsEmptyString()
+    public class ToCsvTests
     {
-        ApiCoverageResult coverageResult = null;
+        private const string FileName = "testCsv.csv";
+        private static string LineBreak { get; } = "\r\n";
 
-        Assert.Throws<ArgumentNullException>(() => coverageResult.ToCsv(FileName));
-    }
+        [Fact]
+        public void ToCsv_NullMappedApiResult_ReturnsEmptyString()
+        {
+            ApiCoverageResult coverageResult = null;
 
-    [Fact]
-    public void ToCsv_EmptyMappedApiResult_ReturnsEmptyString()
-    {
-        var result = new ApiCoverageResult();
+            Assert.Throws<ArgumentNullException>(() => coverageResult.ToCsv(FileName));
+        }
 
-        result.ToCsv(FileName);
+        [Fact]
+        public void ToCsv_EmptyMappedApiResult_ReturnsEmptyString()
+        {
+            var result = new ApiCoverageResult();
 
-        ValidateCsvFile(FileName, "Method,Endpoint,TestsCount\r\n");
-    }
+            result.ToCsv(FileName);
 
-    [Fact]
-    public void ToCsv_MappedForEndpointWithoutTests_ReturnsCsvWithZeroTestCountForEndpoint()
-    {
-        var result = new ApiCoverageResult();
-        var endpoint = new EndpointInfo(HttpMethod.Get, "endpoint/path");
-        result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
+            ValidateCsvFile(FileName, "Method,Endpoint,TestsCount\r\n");
+        }
 
-        var expectedCsv = "Method,Endpoint,TestsCount\r\n" +
-                          "GET,endpoint/path,0\r\n";
+        [Fact]
+        public void ToCsv_MappedForEndpointWithoutTests_ReturnsCsvWithZeroTestCountForEndpoint()
+        {
+            var result = new ApiCoverageResult();
+            var endpoint = new EndpointInfo(HttpMethod.Get, "endpoint/path");
+            result.EndpointsMapping.Add(endpoint, new List<MethodInfo>());
 
-        result.ToCsv(FileName);
+            var expectedCsv = "Method,Endpoint,TestsCount\r\n" +
+                              "GET,endpoint/path,0\r\n";
 
-        ValidateCsvFile(FileName, expectedCsv);
-    }
+            result.ToCsv(FileName);
 
-    [Fact]
-    public void ToCsv_WithRelativePath_CreatesCsvFileWithEndpointCoverageData()
-    {
-        var assemblyUnderTest = typeof(AssemblyUnderTests.MockClass).Assembly;
-        var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
+            ValidateCsvFile(FileName, expectedCsv);
+        }
 
-        var result = RestEaseTestCoverageBuilder
-            .ForTestsInAssembly(assemblyUnderTest)
-            .ForController<ITestController>()
-            .UseSwaggerJsonPath(jsonPath)
-            .ApiTestCoverage;
+        [Fact]
+        public void ToCsv_WithRelativePath_CreatesCsvFileWithEndpointCoverageData()
+        {
+            var assemblyUnderTest = typeof(AssemblyUnderTests.MockClass).Assembly;
+            var jsonPath = Path.Combine("TestData", "coverageTestSwagger.json");
 
-        var expectedCsv = $"Method,Endpoint,TestsCount{LineBreak}" +
-                          $"GET,/api/operation,1{LineBreak}" +
-                          $"GET,/api/operation/all,2{LineBreak}" +
-                          $"PATCH,/api/operation/all,3{LineBreak}" +
-                          $"GET,/api/operation/get,5{LineBreak}" +
-                          $"GET,/api/operation/with/{{path}}/parameter,1{LineBreak}" +
-                          $"PUT,/api/operation/withparameters,1{LineBreak}" +
-                          $"POST,/api/operation/all,0{LineBreak}" +
-                          $"DELETE,/api/operation/all,0{LineBreak}" +
-                          $"POST,/api/operation/all/duplicate,0{LineBreak}" +
-                          $"GET,/api/operation/all/duplicate,0{LineBreak}" +
-                          $"PUT,/api/operation/withparametersnottested,0{LineBreak}";
+            var result = RestEaseTestCoverageBuilder
+                .ForTestsInAssembly(assemblyUnderTest)
+                .ForController<ITestController>()
+                .UseSwaggerJsonPath(jsonPath)
+                .ApiTestCoverage;
 
-        var directoryName = "csvTestDirectory";
-        Directory.CreateDirectory(directoryName);
+            var expectedCsv = $"Method,Endpoint,TestsCount{LineBreak}" +
+                              $"GET,/api/operation,1{LineBreak}" +
+                              $"GET,/api/operation/all,2{LineBreak}" +
+                              $"PATCH,/api/operation/all,3{LineBreak}" +
+                              $"GET,/api/operation/get,5{LineBreak}" +
+                              $"GET,/api/operation/with/{{path}}/parameter,1{LineBreak}" +
+                              $"PUT,/api/operation/withparameters,1{LineBreak}" +
+                              $"POST,/api/operation/all,0{LineBreak}" +
+                              $"DELETE,/api/operation/all,0{LineBreak}" +
+                              $"POST,/api/operation/all/duplicate,0{LineBreak}" +
+                              $"GET,/api/operation/all/duplicate,0{LineBreak}" +
+                              $"PUT,/api/operation/withparametersnottested,0{LineBreak}";
 
-        var filePath = Path.Combine(directoryName, FileName);
+            var directoryName = "csvTestDirectory";
+            Directory.CreateDirectory(directoryName);
 
-        result.ToCsv(filePath);
+            var filePath = Path.Combine(directoryName, FileName);
 
-        ValidateCsvFile(filePath, expectedCsv);
-    }
+            result.ToCsv(filePath);
 
-    private static void ValidateCsvFile(string filePath, string expectedCsv)
-    {
-        var isExistingFile = File.Exists(filePath);
+            ValidateCsvFile(filePath, expectedCsv);
+        }
 
-        isExistingFile.Should().BeTrue($"{filePath} file should have been created by ToCsv(...) method");
+        private static void ValidateCsvFile(string filePath, string expectedCsv)
+        {
+            var isExistingFile = File.Exists(filePath);
 
-        var csv = File.ReadAllText(filePath);
-        csv.Should().Be(expectedCsv);
+            isExistingFile.Should().BeTrue($"{filePath} file should have been created by ToCsv(...) method");
+
+            var csv = File.ReadAllText(filePath);
+            csv.Should().Be(expectedCsv);
+        }
     }
 }

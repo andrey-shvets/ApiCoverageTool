@@ -4,16 +4,17 @@ using System.Reflection;
 using ApiCoverageTool.Models;
 using FluentAssertions;
 
-namespace ApiCoverageTool.Tests.Helpers;
-
-public static class ValidationHelper
+namespace ApiCoverageTool.Tests.Helpers
 {
-    public static void ValidateMappedEndpoints(this Dictionary<EndpointInfo, List<MethodInfo>> mappedEndpoints, IList<(EndpointInfo Endpoint, List<string> Methods)> expected)
+    public static class ValidationHelper
     {
-        var actual = mappedEndpoints.Keys.Select(e => (e, ToStringList(mappedEndpoints[e]))).ToList();
+        public static void ValidateMappedEndpoints(this Dictionary<EndpointInfo, List<MethodInfo>> mappedEndpoints, IList<(EndpointInfo Endpoint, List<string> Methods)> expected)
+        {
+            var actual = mappedEndpoints.Keys.Select(e => (e, ToStringList(mappedEndpoints[e]))).ToList();
 
-        actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        private static IList<string> ToStringList(IEnumerable<MethodInfo> methods) => methods.Select(m => m.Name).ToList();
     }
-
-    private static IList<string> ToStringList(IEnumerable<MethodInfo> methods) => methods.Select(m => m.Name).ToList();
 }

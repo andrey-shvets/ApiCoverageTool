@@ -1,17 +1,18 @@
 ﻿using System.Net.Http;
 
-namespace ApiCoverageTool.Models;
-
-public record EndpointInfo
+namespace ApiCoverageTool.Models
 {
-    public HttpMethod RestMethod { get; private set; }
-    public string Path { get; private set; }
-
-    public EndpointInfo(HttpMethod restMethod, string path)
+    public record EndpointInfo
     {
-        RestMethod = restMethod;
-        Path = path;
-    }
+        public HttpMethod RestMethod { get; private set; }
+        public string Path { get; private set; }
 
-    public override string ToString() => $"{RestMethod.ToString().ToUpper()} {Path}";
+        public EndpointInfo(HttpMethod restMethod, string path)
+        {
+            RestMethod = restMethod;
+            Path = path;
+        }
+
+        public override string ToString() => $"{RestMethod.ToString().ToUpper()} {Path}";
+    }
 }

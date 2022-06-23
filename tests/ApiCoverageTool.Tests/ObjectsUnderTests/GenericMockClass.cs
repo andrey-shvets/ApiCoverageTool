@@ -1,12 +1,13 @@
-﻿namespace ApiCoverageTool.Tests.ObjectsUnderTests;
-
-public class GenericMockClass<T> where T : new()
+﻿namespace ApiCoverageTool.Tests.ObjectsUnderTests
 {
-    public T GenericMethod<TP>(TP param)
+    public class GenericMockClass<T> where T : new()
     {
-        if (param?.ToString() != string.Empty)
-            return default;
+        public T GenericMethod<TP>(TP param)
+        {
+            if (param?.ToString() != string.Empty)
+                return default;
 
-        return new T();
+            return new T();
+        }
     }
 }

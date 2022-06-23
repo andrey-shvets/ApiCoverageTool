@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 
-namespace ApiCoverageTool.AssemblyProcessing;
-
-public interface ITestsProcessor
+namespace ApiCoverageTool.AssemblyProcessing
 {
-    public bool IsTestMethod(MethodInfo method);
+    public interface ITestsProcessor
+    {
+        public bool IsTestMethod(MethodInfo method);
+    }
 }
