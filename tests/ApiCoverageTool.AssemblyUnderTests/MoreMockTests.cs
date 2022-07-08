@@ -15,9 +15,8 @@ namespace ApiCoverageTool.AssemblyUnderTests
         {
             await Task.Delay(1);
             var newClient = RestClient.For<ITestController>();
-            var _ = string.Empty + $"{4}{2}"
-                + newClient.GetNoPathMethod().ToString()
-                + newClient.NonRestMethod().Result.ToString();
+
+            var _ = string.Empty + $"{4}{2}" + newClient.GetNoPathMethod().ToString();
             await NotTestMethodAsync(newClient);
         }
 

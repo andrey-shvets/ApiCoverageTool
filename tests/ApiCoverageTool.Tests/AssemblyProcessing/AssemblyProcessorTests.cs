@@ -145,7 +145,6 @@ namespace ApiCoverageTool.Tests.AssemblyProcessing
             var expected = new List<string>
             {
                 "GetNoPathMethod",
-                "NonRestMethod",
                 "NotTestMethodAsync",
                 "GetMethod"
             };

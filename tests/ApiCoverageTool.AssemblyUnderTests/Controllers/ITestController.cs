@@ -40,8 +40,6 @@ namespace ApiCoverageTool.AssemblyUnderTests.Controllers
         Task CallEndpointWithParametersNotTested();
 
         [Get("with/{somePath}/parameter")]
-        Task<string> CallEndpointWithPathParameter([Path] string path);
-
-        Task<object> NonRestMethod();
+        Task<string> CallEndpointWithPathParameter([Path] string somePath);
     }
 }

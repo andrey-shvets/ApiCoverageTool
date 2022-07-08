@@ -27,21 +27,12 @@ namespace ApiCoverageTool.Tests.RestClient
         [InlineData("PutAllMethod")]
         [InlineData("PatchAllMethod")]
         [InlineData("DeleteAllMethod")]
-        public void IsRestMethod_ForRestMethod_ReturnsFlase(string methodName)
+        public void IsRestMethod_ForRestMethod_ReturnsFalse(string methodName)
         {
             var type = typeof(ITestController);
             var method = type.GetMethod(methodName);
 
             RestProcessor.IsRestMethod(method).Should().BeTrue();
-        }
-
-        [Fact]
-        public void IsRestMethod_ForNotRestMethod_ReturnsFlase()
-        {
-            var type = typeof(ITestController);
-            var method = type.GetMethod("NonRestMethod");
-
-            RestProcessor.IsRestMethod(method).Should().BeFalse();
         }
 
         #endregion IsRestMethod
@@ -67,15 +58,6 @@ namespace ApiCoverageTool.Tests.RestClient
             var method = type.GetMethod(methodName);
 
             RestProcessor.GetRestMethod(method).Should().Be(expectedMethod.ToHttpMethod());
-        }
-
-        [Fact]
-        public void GetRestMethod_ForNotRestMethod_ReturnsNull()
-        {
-            var type = typeof(ITestController);
-            var method = type.GetMethod("NonRestMethod");
-
-            RestProcessor.GetRestMethod(method).Should().BeNull();
         }
 
         #endregion GetRestMethod
@@ -114,15 +96,6 @@ namespace ApiCoverageTool.Tests.RestClient
             var method = type.GetMethod(methodName);
 
             RestProcessor.GetFullPath(method).Should().Be(expectedPath);
-        }
-
-        [Fact]
-        public void GetFullPath_ForNotRestMethod_ThrowsArgumentException()
-        {
-            var type = typeof(ITestController);
-            var method = type.GetMethod("NonRestMethod");
-
-            Assert.Throws<ArgumentException>(() => RestProcessor.GetFullPath(method));
         }
 
         #endregion GetFullPath
