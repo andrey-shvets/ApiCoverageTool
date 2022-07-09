@@ -3,34 +3,33 @@ using System.Linq;
 using System.Text;
 using ClosedXML.Excel;
 
-namespace ApiCoverageTool.Tests.Helpers
+namespace ApiCoverageTool.Tests.Helpers;
+
+internal static class ExcelExtensions
 {
-    internal static class ExcelExtensions
+    public static string[][] ToStringArray(this IXLRange range)
     {
-        public static string[][] ToStringArray(this IXLRange range)
+        var table = new List<string[]>();
+
+        foreach (var row in range.Rows())
         {
-            var table = new List<string[]>();
+            var rowValues = row.Cells(usedCellsOnly: true).Select(cell => cell.Value.ToString()).ToArray();
 
-            foreach (var row in range.Rows())
-            {
-                var rowValues = row.Cells(usedCellsOnly: true).Select(cell => cell.Value.ToString()).ToArray();
-
-                if (!rowValues.All(string.IsNullOrWhiteSpace))
-                    table.Add(rowValues);
-            }
-
-            return table.ToArray();
+            if (!rowValues.All(string.IsNullOrWhiteSpace))
+                table.Add(rowValues);
         }
 
-        public static string ToCsvString(this IXLRange range)
-        {
-            var stringArray = range.ToStringArray();
-            var builder = new StringBuilder();
+        return table.ToArray();
+    }
 
-            foreach (var row in stringArray)
-                builder.AppendLine(string.Join(',', row));
+    public static string ToCsvString(this IXLRange range)
+    {
+        var stringArray = range.ToStringArray();
+        var builder = new StringBuilder();
 
-            return builder.ToString();
-        }
+        foreach (var row in stringArray)
+            builder.AppendLine(string.Join(',', row));
+
+        return builder.ToString();
     }
 }

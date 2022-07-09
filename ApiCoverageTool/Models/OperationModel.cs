@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ApiCoverageTool.Models
+namespace ApiCoverageTool.Models;
+
+public class OperationModel
 {
-    public class OperationModel
-    {
-        [JsonPropertyName("operationId")]
-        public string OperationId { get; set; }
-    }
+    [JsonPropertyName("operationId")]
+    public string OperationId { get; set; }
 }

@@ -4,146 +4,149 @@ using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 
-namespace ApiCoverageTool.Extensions
+namespace ApiCoverageTool.Extensions;
+
+public static class ReflectionExtensions
 {
-    public static class ReflectionExtensions
+    private static Dictionary<string, MethodBase> MethodDefinitionsMap { get; } = new Dictionary<string, MethodBase>();
+    private static Dictionary<MethodBase, MethodDefinition> MethodBasesMap { get; } = new Dictionary<MethodBase, MethodDefinition>();
+    private static Dictionary<string, Type> TypeDefinitionsMap { get; } = new Dictionary<string, Type>();
+
+    public static bool SameAs(this TypeDefinition currentTypeDefinition, Type type)
     {
-        private static Dictionary<string, MethodInfo> MethodDefinitionsMap { get; } = new Dictionary<string, MethodInfo>();
-        private static Dictionary<MethodInfo, MethodDefinition> MethodInfosMap { get; } = new Dictionary<MethodInfo, MethodDefinition>();
-        private static Dictionary<string, Type> TypeDefinitionsMap { get; } = new Dictionary<string, Type>();
+        if (currentTypeDefinition is null && type is null)
+            return true;
 
-        public static bool SameAs(this TypeDefinition currentTypeDefinition, Type type)
+        if (currentTypeDefinition is null || type is null)
+            return false;
+
+        var typeDefinition = type.ToTypeDefinition();
+
+        return currentTypeDefinition.FullName == typeDefinition.FullName &&
+               currentTypeDefinition.Module.Assembly.Name.FullName == typeDefinition.Module.Assembly.Name.FullName;
+    }
+
+    public static bool SameAs(this Type type, TypeDefinition typeDefinition) => typeDefinition.SameAs(type);
+
+    public static bool SameAs(this MethodDefinition methodDefinition, MethodBase methodBase)
+    {
+        if (methodDefinition is null && methodBase is null)
+            return true;
+
+        if (methodDefinition is null || methodBase is null)
+            return false;
+
+        if (methodDefinition.Name != methodBase.Name)
+            return false;
+
+        if (methodDefinition.DeclaringType.FullName != methodBase.DeclaringType.FullName)
+            return false;
+
+        return methodDefinition.ToMethodBase() == methodBase;
+    }
+
+    public static bool SameAs(this MethodBase methodBase, MethodDefinition methodDefinition) => methodDefinition.SameAs(methodBase);
+
+    public static void IsNotNullValidation(this object obj, string paramName)
+    {
+        if (obj is null)
+            throw new ArgumentNullException(paramName, $"{paramName} can not be null.");
+    }
+
+    public static MethodBase ToMethodBase(this MethodDefinition methodDefinition)
+    {
+        methodDefinition.IsNotNullValidation(nameof(methodDefinition));
+
+        if (MethodDefinitionsMap.ContainsKey(methodDefinition.FullName))
+            return MethodDefinitionsMap[methodDefinition.FullName];
+
+        return MethodToMethodBase(methodDefinition);
+    }
+
+    private static MethodBase MethodToMethodBase(MethodDefinition methodDefinition)
+    {
+        try
         {
-            if (currentTypeDefinition is null && type is null)
-                return true;
+            var type = methodDefinition.DeclaringType.ToType();
 
-            if (currentTypeDefinition is null || type is null)
-                return false;
+            var allMethods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+            var metadataToken = methodDefinition.MetadataToken.GetHashCode();
+            var method = allMethods.Single(m => m.Name == methodDefinition.Name && m.MetadataToken == metadataToken);
+            MethodDefinitionsMap[methodDefinition.FullName] = method;
 
-            var typeDefinition = type.ToTypeDefinition();
-
-            return currentTypeDefinition.FullName == typeDefinition.FullName &&
-                   currentTypeDefinition.Module.Assembly.Name.FullName == typeDefinition.Module.Assembly.Name.FullName;
+            return method;
         }
-
-        public static bool SameAs(this Type type, TypeDefinition typeDefinition) => typeDefinition.SameAs(type);
-
-        public static bool SameAs(this MethodDefinition methodDefinition, MethodInfo methodInfo)
+        catch (Exception ex)
         {
-            if (methodDefinition is null && methodInfo is null)
-                return true;
+            Console.WriteLine($"Failed to convert MethodDefinition to MethodBase for method '{methodDefinition.FullName}'. Error: {ex.Message}");
 
-            if (methodDefinition is null || methodInfo is null)
-                return false;
-
-            if (methodDefinition.Name != methodInfo.Name)
-                return false;
-
-            if (methodDefinition.DeclaringType.FullName != methodInfo.DeclaringType.FullName)
-                return false;
-
-            return methodDefinition.ToMethodInfo() == methodInfo;
+            throw;
         }
+    }
 
-        public static bool SameAs(this MethodInfo methodInfo, MethodDefinition methodDefinition) => methodDefinition.SameAs(methodInfo);
+    public static MethodDefinition ToMethodDefinition(this MethodBase method)
+    {
+        method.IsNotNullValidation(nameof(method));
 
-        public static void IsNotNullValidation(this object obj, string paramName)
+        if (MethodBasesMap.ContainsKey(method))
+            return MethodBasesMap[method];
+
+        var assemblyDefinition = AssemblyDefinition.ReadAssembly(method.DeclaringType.Assembly.Location);
+        var typeDefinition = assemblyDefinition.MainModule.GetType(method.DeclaringType.FullName.Replace("+", "/"));
+        var methodDefinition = typeDefinition.Methods.Single(m =>
+            m.Name == method.Name && m.MetadataToken.GetHashCode() == method.MetadataToken);
+
+        MethodBasesMap[method] = methodDefinition;
+
+        return methodDefinition;
+    }
+
+    public static TypeDefinition ToTypeDefinition(this Type type)
+    {
+        type.IsNotNullValidation(nameof(type));
+        var assemblyDefinition = AssemblyDefinition.ReadAssembly(type.Module.Assembly.Location);
+
+        return assemblyDefinition.MainModule.ImportReference(type).Resolve();
+    }
+
+    private static Type ToType(this TypeDefinition typeDefinition)
+    {
+        if (TypeDefinitionsMap.ContainsKey(typeDefinition.FullName))
+            return TypeDefinitionsMap[typeDefinition.FullName];
+
+        var assemblyFullName = typeDefinition.Module.Assembly.FullName;
+        var assembly = Assembly.Load(assemblyFullName);
+
+        if (typeDefinition.IsNested)
         {
-            if (obj is null)
-                throw new ArgumentNullException(paramName, $"{paramName} can not be null.");
-        }
+            var declaringType = typeDefinition.DeclaringType.ToType();
 
-        public static MethodInfo ToMethodInfo(this MethodDefinition methodDefinition)
-        {
-            methodDefinition.IsNotNullValidation(nameof(methodDefinition));
-
-            if (MethodDefinitionsMap.ContainsKey(methodDefinition.FullName))
-                return MethodDefinitionsMap[methodDefinition.FullName];
-
-            try
-            {
-                var assemblyFullName = methodDefinition.Module.Assembly.FullName;
-                var assembly = Assembly.Load(assemblyFullName);
-
-                var type = methodDefinition.DeclaringType.ToType();
-                var allMethods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-                var metadataToken = methodDefinition.MetadataToken.GetHashCode();
-                var method = allMethods.Single(m => m.Name == methodDefinition.Name && m.MetadataToken == metadataToken);
-                MethodDefinitionsMap[methodDefinition.FullName] = method;
-
-                return method;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to convert MethodDefinition to MethodInfo for method '{methodDefinition.FullName}'. Error: {ex.Message}");
-                throw;
-            }
-        }
-
-        public static MethodDefinition ToMethodDefinition(this MethodInfo method)
-        {
-            method.IsNotNullValidation(nameof(method));
-
-            if (MethodInfosMap.ContainsKey(method))
-                return MethodInfosMap[method];
-
-            var assemblyDefinition = AssemblyDefinition.ReadAssembly(method.DeclaringType.Assembly.Location);
-            var typeDefinition = assemblyDefinition.MainModule.GetType(method.DeclaringType.FullName.Replace("+", "/"));
-            var methodDefinition = typeDefinition.Methods.Single(m =>
-                m.Name == method.Name && m.MetadataToken.GetHashCode() == method.MetadataToken);
-
-            MethodInfosMap[method] = methodDefinition;
-
-            return methodDefinition;
-        }
-
-        public static TypeDefinition ToTypeDefinition(this Type type)
-        {
-            type.IsNotNullValidation(nameof(type));
-            var assemblyDefinition = AssemblyDefinition.ReadAssembly(type.Module.Assembly.Location);
-
-            return assemblyDefinition.MainModule.ImportReference(type).Resolve();
-        }
-
-        private static Type ToType(this TypeDefinition typeDefinition)
-        {
             if (TypeDefinitionsMap.ContainsKey(typeDefinition.FullName))
                 return TypeDefinitionsMap[typeDefinition.FullName];
 
-            var assemblyFullName = typeDefinition.Module.Assembly.FullName;
-            var assembly = Assembly.Load(assemblyFullName);
+            var declaringTypeInfo = declaringType.GetTypeInfo();
 
-            if (typeDefinition.IsNested)
-            {
-                var declaringType = typeDefinition.DeclaringType.ToType();
+            var typeInfo = declaringTypeInfo.DeclaredNestedTypes
+                .FirstOrDefault(t => t.FullName == typeDefinition.FullName.Replace("/", "+"));
 
-                if (TypeDefinitionsMap.ContainsKey(typeDefinition.FullName))
-                    return TypeDefinitionsMap[typeDefinition.FullName];
+            TypeDefinitionsMap[typeDefinition.FullName] = typeInfo.AsType();
 
-                var declaringTypeInfo = declaringType.GetTypeInfo();
-
-                var typeInfo = declaringTypeInfo.DeclaredNestedTypes
-                    .FirstOrDefault(t => t.FullName == typeDefinition.FullName.Replace("/", "+"));
-
-                TypeDefinitionsMap[typeDefinition.FullName] = typeInfo.AsType();
-
-                return typeInfo.AsType();
-            }
-
-            var type = assembly.GetType(typeDefinition.GetReflectionName());
-            TypeDefinitionsMap[typeDefinition.FullName] = type;
-
-            return type;
+            return typeInfo.AsType();
         }
 
-        private static string GetReflectionName(this TypeReference type)
-        {
-            if (!type.IsGenericInstance)
-                return type.FullName;
+        var type = assembly.GetType(typeDefinition.GetReflectionName());
+        TypeDefinitionsMap[typeDefinition.FullName] = type;
 
-            var genericInstance = (GenericInstanceType)type;
-            var genericArguments = string.Join(",", genericInstance.GenericArguments.Select(p => p.GetReflectionName()).ToList());
-            return string.Format($"{genericInstance.Namespace}.{type.Name}[{genericArguments}]");
-        }
+        return type;
+    }
+
+    private static string GetReflectionName(this TypeReference type)
+    {
+        if (!type.IsGenericInstance)
+            return type.FullName;
+
+        var genericInstance = (GenericInstanceType)type;
+        var genericArguments = string.Join(",", genericInstance.GenericArguments.Select(p => p.GetReflectionName()).ToList());
+        return string.Format($"{genericInstance.Namespace}.{type.Name}[{genericArguments}]");
     }
 }
