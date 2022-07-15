@@ -110,7 +110,7 @@ public static class OutputExtensions
             rowIndex++;
         }
 
-        worksheet.Columns(1, 3).AdjustToContents();
+        worksheet.Columns(1, 3);
     }
 
     private static void FillCoverageMetrics(this IXLWorksheet worksheet)
@@ -135,6 +135,6 @@ public static class OutputExtensions
         worksheet.Cell("F3").FormulaA1 = $"=COUNTIF({firstTestCountCell}:{lastTestCountCell},\"=0\")";
         worksheet.Cell("F4").FormulaA1 = "=ROUND(F2/(F1/100), 1)";
 
-        worksheet.Columns(5, 5).AdjustToContents();
+        worksheet.Columns(5, 5);
     }
 }
