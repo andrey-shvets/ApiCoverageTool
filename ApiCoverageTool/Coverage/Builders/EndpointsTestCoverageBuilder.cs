@@ -9,14 +9,16 @@ using ApiCoverageTool.RestClient;
 
 namespace ApiCoverageTool.Coverage.Builders;
 
-public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestClientMethodsProcessor, new()
+public class EndpointsTestCoverageBuilder<TProcessor>
+    where TProcessor : IRestClientMethodsProcessor, new()
 {
     private IList<EndpointInfo> Endpoints { get; set; }
     private HashSet<Type> Controllers { get; } = new HashSet<Type>();
     private Assembly TestAssembly { get; init; }
 
     protected EndpointsTestCoverageBuilder()
-    { }
+    {
+    }
 
     public static EndpointsTestCoverageBuilder<TProcessor> ForTestsInAssembly(Assembly assembly)
     {
@@ -37,7 +39,9 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
             throw new ArgumentNullException(nameof(client), "Http client can not be null.");
 
         var swaggerJsonUri = "swagger/v1/swagger.json";
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         var swaggerJson = client.GetStringAsync(swaggerJsonUri).Result;
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 
         return UseSwaggerJson(swaggerJson);
     }
@@ -48,9 +52,11 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
             throw new ArgumentNullException(nameof(swaggerUrl), "Swagger url can not be null.");
 
         if (!swaggerUrl.EndsWith("/swagger.json"))
-            throw new ArgumentException(nameof(swaggerUrl), $"Invalid swagger url, should be in format 'https://.../swagger.json'. Provided url: {swaggerUrl}");
+            throw new ArgumentException($"Invalid swagger url, should be in format 'https://.../swagger.json'. Provided url: {swaggerUrl}", nameof(swaggerUrl));
 
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         var swaggerJson = new HttpClient().GetStringAsync(swaggerUrl).Result;
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 
         return UseSwaggerJson(swaggerJson);
     }
@@ -85,7 +91,9 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
         return this;
     }
 
-    public EndpointsTestCoverageBuilder<TProcessor> ForController<TController>() where TController : class => ForController(typeof(TController));
+    public EndpointsTestCoverageBuilder<TProcessor> ForController<TController>()
+        where TController : class
+        => ForController(typeof(TController));
 
     public Dictionary<EndpointInfo, List<MethodBase>> ControllerMethodsCoverage => ControllerMethodsTestCoverage<TProcessor>.GetTestCoverage(TestAssembly, Controllers.ToArray());
     public ApiCoverageResult MappingByController => ApiControllerMapping<TProcessor>.GetMappingByController(Endpoints, Controllers.ToArray());
@@ -101,8 +109,10 @@ public class EndpointsTestCoverageBuilder<TProcessor> where TProcessor : IRestCl
             var mappedEndpoints = apiCoverage.EndpointsMapping.Keys;
 
             foreach (var endpoint in Endpoints)
+            {
                 if (!mappedEndpoints.Contains(endpoint))
                     apiCoverage.EndpointsMapping.Add(endpoint, new List<MethodBase>());
+            }
 
             return apiCoverage;
         }

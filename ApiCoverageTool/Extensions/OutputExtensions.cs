@@ -18,10 +18,10 @@ public static class OutputExtensions
     public static void ToCsv(this ApiCoverageResult apiCoverageResult, string path)
     {
         if (apiCoverageResult is null)
-            throw new ArgumentNullException($"{nameof(apiCoverageResult)} can not be null", nameof(apiCoverageResult));
+            throw new ArgumentNullException(nameof(apiCoverageResult), $"{nameof(apiCoverageResult)} can not be null");
 
         if (path is null)
-            throw new ArgumentNullException($"{nameof(path)} can not be null", nameof(path));
+            throw new ArgumentNullException(nameof(path), $"{nameof(path)} can not be null");
 
         if (File.Exists(path))
             File.Delete(path);
@@ -69,13 +69,13 @@ public static class OutputExtensions
     private static void ValidateInputParameters(ApiCoverageResult apiCoverageResult, string path, string worksheetName)
     {
         if (apiCoverageResult is null)
-            throw new ArgumentNullException($"{nameof(apiCoverageResult)} can not be null", nameof(apiCoverageResult));
+            throw new ArgumentNullException(nameof(apiCoverageResult), $"{nameof(apiCoverageResult)} can not be null");
 
         if (path is null)
-            throw new ArgumentNullException($"{nameof(path)} can not be null", nameof(path));
+            throw new ArgumentNullException(nameof(path), $"{nameof(path)} can not be null");
 
         if (worksheetName is null)
-            throw new ArgumentNullException($"{nameof(worksheetName)} can not be null", nameof(path));
+            throw new ArgumentNullException(nameof(path), $"{nameof(worksheetName)} can not be null");
     }
 
     private static void AddHeaders(this IXLWorksheet worksheet)
