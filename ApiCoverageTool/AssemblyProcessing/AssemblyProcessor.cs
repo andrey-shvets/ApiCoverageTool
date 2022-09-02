@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using ApiCoverageTool.Configurations;
 using ApiCoverageTool.Extensions;
+using Microsoft.Extensions.Configuration;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -12,9 +14,17 @@ namespace ApiCoverageTool.AssemblyProcessing;
 
 public static class AssemblyProcessor
 {
-    private const string DefaultIncludeAssemblyMask = ".+";
-    private const string DefaultExcludeAssemblyMask =
-        @"^System(\.|$)|^Microsoft(\.|$)|^Mono(\.|$)|^xunit(\.|$)|^RestEase(\.|$)|^FluentAssertions(\.|$)|^Flurl(\.|$)|^Newtonsoft(\.|$)|^ApiCoverageTool$|^Dapper(\.|$)";
+    private static ApiCoverageOptions ApiCoverageConfiguration { get; }
+
+    static AssemblyProcessor()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+            .AddJsonFile("appsettings.tests.json", optional: true, reloadOnChange: false)
+            .Build();
+
+        ApiCoverageConfiguration = configuration.GetSection(ApiCoverageOptions.ApiCoverageSettings).Get<ApiCoverageOptions>();
+    }
 
     public static IList<MethodBase> GetAllTests(Assembly assembly)
     {
@@ -142,14 +152,15 @@ public static class AssemblyProcessor
     }
 
     private static IList<string> GetAvailableAssemblies(
-        AssemblyDefinition assembly,
-        string includeAssemblyRegex = DefaultIncludeAssemblyMask,
-        string excludeAssemblyRegex = DefaultExcludeAssemblyMask)
+        AssemblyDefinition assembly)
     {
         assembly.IsNotNullValidation(nameof(assembly));
 
         var availableAssemblies = assembly.MainModule.AssemblyReferences.Select(a => a.Name).ToList();
         availableAssemblies.Add(assembly.Name.Name);
+
+        var includeAssemblyRegex = ApiCoverageConfiguration.IncludeAssemblyMask;
+        var excludeAssemblyRegex = ApiCoverageConfiguration.ExcludeAssemblyMask;
 
         var filteredNames = availableAssemblies
             .Where(name => Regex.IsMatch(name, includeAssemblyRegex))
