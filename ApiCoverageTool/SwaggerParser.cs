@@ -34,7 +34,7 @@ public static class SwaggerParser
 
         try
         {
-            var swaggerEndpoints = RetrieveMSwaggerModelFromJson(swaggerJson);
+            var swaggerEndpoints = RetrieveSwaggerModelFromJson(swaggerJson);
             return GetEndpointsList(swaggerEndpoints).ToList();
         }
         catch (Exception ex) when (ex is not InvalidSwaggerJsonException)
@@ -43,7 +43,7 @@ public static class SwaggerParser
         }
     }
 
-    private static SwaggerModel RetrieveMSwaggerModelFromJson(string swaggerJson)
+    private static SwaggerModel RetrieveSwaggerModelFromJson(string swaggerJson)
     {
         var model = JsonSerializer.Deserialize<SwaggerModel>(swaggerJson);
 

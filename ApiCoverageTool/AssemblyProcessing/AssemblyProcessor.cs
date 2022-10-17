@@ -93,8 +93,8 @@ public static class AssemblyProcessor
             .Where(instruction => instruction.IsMethodCall() ||
                                   instruction.IsLambdaExpression())
             .Select(instruction => instruction.Operand).OfType<MethodReference>()
-            .Select(mr => mr.Resolve())
             .Where(mr => mr.IsFromAssemblies(assembliesToCheck))
+            .Select(mr => mr.Resolve())
             .Select(m => m.ToMethodBase())
             .ToHashSet();
 
@@ -174,7 +174,8 @@ public static class AssemblyProcessor
 
     private static bool IsAsync(this MethodBase method) => method.GetCustomAttribute<AsyncStateMachineAttribute>() is not null;
 
-    private static bool IsFromAssemblies(this MethodDefinition method, IEnumerable<string> assemblies) => assemblies.Contains(method.Module.Assembly.Name.Name);
+    private static bool IsFromAssemblies(this MemberReference member, IEnumerable<string> assemblies) =>
+        assemblies.Any(a => member.DeclaringType.FullName.Contains(a));
 
     private static bool IsMethodCall(this Instruction instruction) =>
         instruction.OpCode == OpCodes.Call

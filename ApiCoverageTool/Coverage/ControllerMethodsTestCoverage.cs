@@ -44,6 +44,7 @@ public static class ControllerMethodsTestCoverage<T> where T : IRestClientMethod
     private static IList<EndpointInfo> GetAllEndpointsCalledFromMethod(MethodBase method, Type[] controllers)
     {
         var restProcessor = new T();
+
         var restMethodsCalled = AssemblyProcessor.GetAllMethodCalls(method)
             .Where(m => restProcessor.IsRestMethod(m))
             .Where(m => controllers.Contains(m.DeclaringType))
