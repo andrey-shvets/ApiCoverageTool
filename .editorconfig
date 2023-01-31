@@ -105,8 +105,6 @@ dotnet_diagnostic.IDE0055.severity = warning
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
-dotnet_style_namespace_match_folder = true
-
 # Avoid "this." and "Me." if not necessary
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:warning
@@ -207,7 +205,7 @@ dotnet_naming_symbols.all_members.applicable_kinds = *
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
 # error RS2008: Enable analyzer release tracking for the analyzer project containing rule '{0}'
-dotnet_diagnostic.RS2008.severity = suggestion
+dotnet_diagnostic.rs2008.severity = suggestion
 
 # IDE0073: File header
 dotnet_diagnostic.IDE0073.severity = warning
@@ -222,7 +220,7 @@ dotnet_diagnostic.IDE0036.severity = warning
 dotnet_diagnostic.IDE0043.severity = warning
 
 # IDE0044: Make field readonly
-dotnet_diagnostic.IDE0044.severity = warning
+dotnet_diagnostic.IDE0044.severity = suggestion
 
 # RS0016: Only enable if API files are present
 dotnet_public_api_analyzer.require_api_files = true
@@ -375,23 +373,23 @@ csharp_style_var_when_type_is_apparent = true:warning
 csharp_style_var_elsewhere = true:warning
 
 # dotnet_style_allow_multiple_blank_lines_experimental
-dotnet_diagnostic.IDE2000.severity = error
+dotnet_diagnostic.IDE2000.severity = warning
 
 # csharp_style_allow_embedded_statements_on_same_line_experimental
 dotnet_diagnostic.IDE2001.severity = warning
 
 # csharp_style_allow_blank_lines_between_consecutive_braces_experimental
-dotnet_diagnostic.IDE2002.severity = error
+dotnet_diagnostic.IDE2002.severity = warning
 
 # dotnet_style_allow_statement_immediately_after_block_experimental
-dotnet_diagnostic.IDE2003.severity = error
+dotnet_diagnostic.IDE2003.severity = warning
 
 # csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental
-dotnet_diagnostic.IDE2004.severity = error
+dotnet_diagnostic.IDE2004.severity = warning
 
 [*.cs]
 # CS1591:Missing XML comment for publicly visible type or member
-dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.cs1591.severity = none
 # SA1503: Braces should not be omitted
 dotnet_diagnostic.SA1503.severity = none
 # VSTHRD200: Use "Async" suffix for async methods
@@ -452,7 +450,7 @@ dotnet_diagnostic.SA1407.severity = silent
 # SA1408: Conditional expressions should declare precedence
 dotnet_diagnostic.SA1408.severity = silent
 # SA0001: All diagnostics of XML documentation comments has been disabled due to the current project configuration.
-dotnet_diagnostic.SA0001.severity = silent
+dotnet_diagnostic.SA0001.severity = none
 # SA1117: Parameters should be on same line or separate lines
 dotnet_diagnostic.SA1117.severity = none
 # The name of a parameter in C# does not begin with a lower-case letter.
@@ -517,29 +515,25 @@ dotnet_diagnostic.CA1707.severity = warning
 dotnet_diagnostic.SA1402.severity = warning
 # SA1515: Single-line comment should be preceded by blank line
 dotnet_diagnostic.SA1515.severity = warning
-# IDE0130: Namespace does not match folder structure
-dotnet_diagnostic.IDE0130.severity = warning
-# CA1822: Make member static
-dotnet_diagnostic.CA1822.severity = warning
 
 # SA1137: Elements should have the same indentation
-dotnet_diagnostic.SA1137.severity = error
+dotnet_diagnostic.SA1137.severity = warning
 # SA1025: Code should not contain multiple whitespace in a row
-dotnet_diagnostic.SA1025.severity = error
+dotnet_diagnostic.SA1025.severity = warning
 # SA1001: Commas should be spaced correctly
-dotnet_diagnostic.SA1001.severity = error
+dotnet_diagnostic.SA1001.severity = warning
 # SA1003: Symbols should be spaced correctly
-dotnet_diagnostic.SA1003.severity = error
+dotnet_diagnostic.SA1003.severity = warning
 # SA1008: Opening parenthesis should be spaced correctly
-dotnet_diagnostic.SA1008.severity = error
+dotnet_diagnostic.SA1008.severity = warning
 # SA1507: Code should not contain multiple blank lines in a row
-dotnet_diagnostic.SA1507.severity = error
+dotnet_diagnostic.SA1507.severity = warning
 # SA1508: Closing braces should not be preceded by blank line
-dotnet_diagnostic.SA1508.severity = error
+dotnet_diagnostic.SA1508.severity = warning
 # SA1513: Closing brace should be followed by blank line
-dotnet_diagnostic.SA1513.severity = error
+dotnet_diagnostic.SA1513.severity = warning
 # SA1106: Code should not contain empty statements
-dotnet_diagnostic.SA1106.severity = error
+dotnet_diagnostic.SA1106.severity = warning
 
 # Default severity for analyzer diagnostics with category 'StyleCop.CSharp.DocumentationRules'
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = warning
@@ -555,13 +549,9 @@ csharp_style_expression_bodied_local_functions = when_on_single_line:silent
 # CA1707: Identifiers should not contain underscores
 dotnet_diagnostic.CA1707.severity = silent
 
-[**/*Test*/**/*.cs]
-# CA1707: Identifiers should not contain underscores
-dotnet_diagnostic.CA1707.severity = silent
-
 [src/CodeStyle/**.{cs,vb}]
 # warning RS0005: Do not use generic CodeAction.Create to create CodeAction
-dotnet_diagnostic.RS0005.severity = none
+dotnet_diagnostic.rs0005.severity = none
 
 [src/{VisualStudio}/**/*.{cs,vb}]
 # CA1822: Make member static

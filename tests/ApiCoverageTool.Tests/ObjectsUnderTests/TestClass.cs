@@ -23,6 +23,9 @@ public class TestClass : TestClassBase
         return null;
     }
 
+#pragma warning disable S1186 // Methods should not be empty
+#pragma warning disable SA1502 // Element should not be on a single line
+
     private void PrivateMethod()
     { }
 
@@ -31,4 +34,7 @@ public class TestClass : TestClassBase
 
     private static void PrivateStaticMethod()
     { }
+
+#pragma warning restore SA1502 // Element should not be on a single line
+#pragma warning restore S1186 // Methods should not be empty
 }

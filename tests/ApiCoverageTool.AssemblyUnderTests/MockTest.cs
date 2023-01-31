@@ -74,6 +74,6 @@ public class MockTests
 
     private void NotTestMethodExecutesLambdaExpression(Func<Task<object>> lambda)
     {
-        var _ = lambda().Result;
+        _ = lambda().Result;
     }
 }

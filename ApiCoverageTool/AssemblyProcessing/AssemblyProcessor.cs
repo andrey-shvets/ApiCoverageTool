@@ -136,9 +136,6 @@ public static class AssemblyProcessor
 
     private static TypeDefinition TryRetrieveAsyncMethodStateMachineTypeFromStartInstruction(MethodDefinition method)
     {
-        var state1 = method.Body.Instructions
-            .Where(instruction => instruction.OpCode == OpCodes.Call).Select(instruction => instruction.Operand).OfType<MethodReference>().ToList();
-
         var stateMachineInstanceCreationInstruction = method.Body.Instructions
             .FirstOrDefault(instruction => instruction.Operand is GenericInstanceMethod);
 

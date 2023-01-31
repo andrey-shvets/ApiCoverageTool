@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
@@ -8,9 +8,9 @@ namespace ApiCoverageTool.Extensions;
 
 public static class ReflectionExtensions
 {
-    private static Dictionary<string, MethodBase> MethodDefinitionsMap { get; } = new Dictionary<string, MethodBase>();
-    private static Dictionary<MethodBase, MethodDefinition> MethodBasesMap { get; } = new Dictionary<MethodBase, MethodDefinition>();
-    private static Dictionary<string, Type> TypeDefinitionsMap { get; } = new Dictionary<string, Type>();
+    private static ConcurrentDictionary<string, MethodBase> MethodDefinitionsMap { get; } = new ConcurrentDictionary<string, MethodBase>();
+    private static ConcurrentDictionary<MethodBase, MethodDefinition> MethodBasesMap { get; } = new ConcurrentDictionary<MethodBase, MethodDefinition>();
+    private static ConcurrentDictionary<string, Type> TypeDefinitionsMap { get; } = new ConcurrentDictionary<string, Type>();
 
     public static bool SameAs(this TypeDefinition currentTypeDefinition, Type type)
     {
